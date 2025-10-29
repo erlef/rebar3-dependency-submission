@@ -1,26 +1,14 @@
 rebar_dependency_submission
 =====
 
-A rebar plugin
+Calculates dependencies for Rebar3 and submits the list to the GitHub Dependency Submission API
 
 Build
 -----
 
-    $ rebar3 compile
+    $ rebar3 escriptize
 
-Use
+Run
 ---
 
-Add the plugin to your rebar config:
-
-    {plugins, [
-        {rebar_dependency_submission, {"rebar_dependency_submission", "0.1.0"}}
-    ]}.
-
-Then just call your plugin directly in an existing application:
-
-
-    $ rebar3 rebar_dependency_submission
-    ===> Fetching rebar_dependency_submission
-    ===> Compiling rebar_dependency_submission
-    <Plugin Output>
+    $ _build/default/bin/rds

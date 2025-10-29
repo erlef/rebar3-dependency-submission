@@ -10,19 +10,16 @@
 
 -record(pkg, {
     name :: binary(),
-    version :: binary(),
-    old_hash :: binary(),
-    hash :: binary(),
-    repo_config :: term()
+    version :: binary()
 }).
 
 -record(git, {
     repo :: string(),
-    ref :: {ref, string()}
+    ref :: {ref, string()} | {tag, string()} | {branch, string()}
 }).
 
 -record(git_subdir, {
     repo :: string(),
-    ref :: {ref, string()},
+    ref :: {ref, string()} | {tag, string()} | {branch, string()},
     subdir :: file:filename()
 }).
