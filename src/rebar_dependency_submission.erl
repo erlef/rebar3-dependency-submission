@@ -9,12 +9,19 @@
 main(CommandLineArguments) ->
     maybe
         {ok, _} = application:ensure_all_started(rebar_dependency_submission),
-        ?log_debug("Version: ~s\n", [rebar_dependency_submission_common:version()]),
-        {ok, Options, Arguments} ?= rebar_dependency_submission_options:parse(CommandLineArguments),
+        ?log_debug("Version: ~s\n", [
+            rebar_dependency_submission_common:version()
+        ]),
+        {ok, Options, Arguments} ?=
+            rebar_dependency_submission_options:parse(CommandLineArguments),
         rebar_dependency_submission_github:group("Generating snapshot"),
-        ?log_debug("Options (without token): ~p\n", [maps:without([token], Options)]),
+        ?log_debug("Options (without token): ~p\n", [
+            maps:without([token], Options)
+        ]),
         ?log_debug("Arguments: ~p\n", [Arguments]),
-        ?log_debug("Current working directory: ~p\n", [element(2, file:get_cwd())]),
+        ?log_debug("Current working directory: ~p\n", [
+            element(2, file:get_cwd())
+        ]),
         Snapshot = rebar_dependency_submission_snapshot:new(Options),
         rebar_dependency_submission_github:end_group(),
         rebar_dependency_submission_github:group("Submitting snapshot"),

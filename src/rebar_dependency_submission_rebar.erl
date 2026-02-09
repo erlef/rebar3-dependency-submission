@@ -75,7 +75,9 @@ hex_metadata(#{hex_metadata := Metadata} = State, App) when is_atom(App) ->
     Path = build_path(App, "hex_metadata.config"),
     case consult_if_exists(Path) of
         HexMetadata when is_list(HexMetadata) ->
-            State#{hex_metadata := Metadata#{App => maps:from_list(HexMetadata)}};
+            State#{
+                hex_metadata := Metadata#{App => maps:from_list(HexMetadata)}
+            };
         non_existing ->
             State
     end.
@@ -89,10 +91,14 @@ app(#{applications := Apps} = State0, App) ->
                 fun(Path) -> filename:basename(Path) =:= AppSrcFile end,
                 rebar_dependency_submission_common:git_ls_files(".")
             ),
-        AppSrcPattern = lists:concat(["_build/default/lib/", App, "/**/", AppSrcFile, "{,.script}"]),
+        AppSrcPattern = lists:concat([
+            "_build/default/lib/", App, "/**/", AppSrcFile, "{,.script}"
+        ]),
         [PathAppSrc0 | _] ?= filelib:wildcard(AppSrcPattern),
         non_existing ?= app_src(State0, PathAppSrc0),
-        ?error(enoent, [App, State0], #{reason => {file, format_error, [enoent]}})
+        ?error(enoent, [App, State0], #{
+            reason => {file, format_error, [enoent]}
+        })
     else
         {value, PathAppSrc1} ->
             app_src(State0, PathAppSrc1);
@@ -125,12 +131,16 @@ app_src(#{applications := Apps} = State, Path) ->
                 {application, App, AppManifest2} = config_script(
                     Path, {application, App, AppManifest1}
                 ),
-                State#{applications := Apps#{App => maps:from_list(AppManifest2)}}
+                State#{
+                    applications := Apps#{App => maps:from_list(AppManifest2)}
+                }
             end;
         ".script" ->
             maybe
                 {application, App, AppManifest} ?= script_if_exists(Path, []),
-                State#{applications := Apps#{App => maps:from_list(AppManifest)}}
+                State#{
+                    applications := Apps#{App => maps:from_list(AppManifest)}
+                }
             end
     end.
 
@@ -209,7 +219,9 @@ consult_if_exists(File) ->
             non_existing;
         {error, enotdir} ->
             non_existing;
-        {error, {Line, Module, Term}} when is_integer(Line) andalso is_atom(Module) ->
+        {error, {Line, Module, Term}} when
+            is_integer(Line) andalso is_atom(Module)
+        ->
             erlang:raise(error, Term, [
                 synthesize_frame(File, {Line, Module, Term}, [])
                 | ?stacktrace([File])
@@ -234,7 +246,9 @@ script_if_exists(Path, Bindings) ->
             non_existing;
         {error, enotdir} ->
             non_existing;
-        {error, {Line, Module, Term}} when is_integer(Line) andalso is_atom(Module) ->
+        {error, {Line, Module, Term}} when
+            is_integer(Line) andalso is_atom(Module)
+        ->
             erlang:raise(error, Term, [
                 synthesize_frame(Path, {Line, Module, Term}, Bindings)
                 | ?stacktrace([Path, Bindings])

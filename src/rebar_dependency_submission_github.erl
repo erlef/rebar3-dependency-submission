@@ -28,14 +28,20 @@ start() ->
     public_key:cacerts_clear(),
     public_key:cacerts_load().
 
--spec submit(rebar_dependency_submission_options:t(), rebar_dependency_submission_snapshot:t()) -> {ok, Result} | {error, term()} when
+-spec submit(
+    rebar_dependency_submission_options:t(),
+    rebar_dependency_submission_snapshot:t()
+) -> {ok, Result} | {error, term()} when
     Result :: #{status := integer(), binary() => binary()}.
 submit(#{token := Token} = Flags, Snapshot) ->
     URL = api_url(Flags),
     Headers = [
         {"Accept", ~"application/vnd.github+json"},
         {"Authorization", [~"Bearer ", Token]},
-        {"User-Agent", [~"rebar3-dependency-submission/", rebar_dependency_submission_common:version()]},
+        {"User-Agent", [
+            ~"rebar3-dependency-submission/",
+            rebar_dependency_submission_common:version()
+        ]},
         {"X-GitHub-Api-Version", ~"2022-11-28"}
     ],
     Body = json:encode(Snapshot),
@@ -56,10 +62,14 @@ submit(#{token := Token} = Flags, Snapshot) ->
                 {ok, JSON} ?= decode(Response),
                 {ok, JSON#{status => Status}}
             end;
-        {ok, {Status, Response}} when is_integer(Status) andalso is_binary(Response) ->
+        {ok, {Status, Response}} when
+            is_integer(Status) andalso is_binary(Response)
+        ->
             maybe
                 {ok, #{~"message" := Message}} ?= decode(Response),
-                {error, <<(integer_to_binary(Status))/binary, " ", Message/binary>>}
+                {error, <<
+                    (integer_to_binary(Status))/binary, " ", Message/binary
+                >>}
             else
                 {ok, JSON} -> {error, {Status, JSON}};
                 {error, _JSONDecodeError} -> {error, {Status, Response}}
@@ -70,7 +80,9 @@ submit(#{token := Token} = Flags, Snapshot) ->
 
 api_url(#{api_url := ApiUrl, repo := RepoOwner} = Flags) ->
     case
-        uri_string:recompose(ApiUrl#{path := ["/repos/", RepoOwner, "/dependency-graph/snapshots"]})
+        uri_string:recompose(ApiUrl#{
+            path := ["/repos/", RepoOwner, "/dependency-graph/snapshots"]
+        })
     of
         {error, Reason} -> ?error(Reason, [Flags], #{});
         URL -> URL
@@ -167,11 +179,20 @@ add_mask(Value) ->
     workflow_command(add_mask, #{}, "~ts", [Value]).
 
 -doc false.
-workflow_command(Type, Parameters, Format, Args) when is_atom(Type) andalso is_map(Parameters) ->
+workflow_command(Type, Parameters, Format, Args) when
+    is_atom(Type) andalso is_map(Parameters)
+->
     Message =
         case os:getenv("GITHUB_ACTIONS") of
-            false -> [rebar_dependency_submission_common:format_markdown(Format, Args), $\n];
-            _ -> format_command(Type, Parameters, Format, Args)
+            false ->
+                [
+                    rebar_dependency_submission_common:format_markdown(
+                        Format, Args
+                    ),
+                    $\n
+                ];
+            _ ->
+                format_command(Type, Parameters, Format, Args)
         end,
     io:put_chars(standard_io, Message).
 
@@ -179,10 +200,18 @@ workflow_command(Type, Parameters, Format, Args) when is_atom(Type) andalso is_m
 format_command(Type, Parameters, Format, Args) when
     is_atom(Type) andalso map_size(Parameters) =:= 0
 ->
-    io_lib:format("::~ts::~ts\n", [Type, rebar_dependency_submission_common:format_markdown(Format, Args)]);
-format_command(Type, Parameters, Format, Args) when is_atom(Type) andalso is_map(Parameters) ->
+    io_lib:format("::~ts::~ts\n", [
+        Type, rebar_dependency_submission_common:format_markdown(Format, Args)
+    ]);
+format_command(Type, Parameters, Format, Args) when
+    is_atom(Type) andalso is_map(Parameters)
+->
     Extra = string:join(maps:fold(fun format_parameter/3, [], Parameters), ","),
-    io_lib:format("::~ts ~ts::~ts\n", [Type, Extra, rebar_dependency_submission_common:format_markdown(Format, Args)]).
+    io_lib:format("::~ts ~ts::~ts\n", [
+        Type,
+        Extra,
+        rebar_dependency_submission_common:format_markdown(Format, Args)
+    ]).
 
 -doc false.
 format_parameter(Parameter, Value, Extra) ->

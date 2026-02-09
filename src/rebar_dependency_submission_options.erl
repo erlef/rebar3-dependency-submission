@@ -25,7 +25,8 @@ messages to standard error and exit with a non-zero status code.
         "The attempt number of the job. Defaults to `$GITHUB_RUN_ATTEMPT`, then `0`."},
     {correlator, $c, "correlator", utf8_binary,
         "The key used to group snapshots submitted over time. Defaults to `${GITHUB_WORKFLOW}_${GITHUB_JOB}`."},
-    {html_url, $u, "html-url", utf8_binary, "The URL for the job. Defaults to the workflow run."},
+    {html_url, $u, "html-url", utf8_binary,
+        "The URL for the job. Defaults to the workflow run."},
     {ref, $r, "ref", utf8_binary,
         "The repository branch that triggered this snapshot. Defaults to `$GITHUB_REF`."},
     {repo, $p, "repo", utf8_binary,
@@ -68,7 +69,9 @@ usage() ->
     ScriptPath = escript:script_name(),
     Usage = getopt:usage_cmd_line(filename:basename(ScriptPath), ?OPTIONS),
     Options = getopt:usage_options(?OPTIONS),
-    Help = rebar_dependency_submission_common:format_markdown("~ts\n\n~ts\n", [Usage, Options]),
+    Help = rebar_dependency_submission_common:format_markdown("~ts\n\n~ts\n", [
+        Usage, Options
+    ]),
     io:put_chars(standard_error, Help).
 
 -doc """
@@ -77,10 +80,12 @@ Parse command line arguments.
 Automatically handles `--help` flag and prints usage information on standard
 error if any required options are missing.
 """.
--spec parse([string()]) -> {ok, help} | {ok, t(), arguments()} | {error, term()}.
+-spec parse([string()]) ->
+    {ok, help} | {ok, t(), arguments()} | {error, term()}.
 parse(CommandLineArguments) ->
     maybe
-        {ok, {Options, Arguments}} ?= getopt:parse(?OPTIONS, CommandLineArguments),
+        {ok, {Options, Arguments}} ?=
+            getopt:parse(?OPTIONS, CommandLineArguments),
         %% Return early on `help` to avoid printing "missing option"
         no_help ?= help(Options),
         %% We fetch first and then match to print all missing options and not
@@ -157,7 +162,8 @@ correlator(Options) ->
             {ok, rebar_dependency_submission_common:to_binary(Value)};
         false ->
             rebar_dependency_submission_github:error(
-                "`--correlator`, `$GITHUB_WORKFLOW`, and/or `$GITHUB_JOB` are missing", []
+                "`--correlator`, `$GITHUB_WORKFLOW`, and/or `$GITHUB_JOB` are missing",
+                []
             ),
             {error, missing}
     end.
@@ -168,8 +174,10 @@ html_url(Options, ServerURL, Repo) ->
         {ok, RunId} ?= env("GITHUB_RUN_ID"),
         <<ServerURL/binary, "/", Repo/binary, "/actions/runs/", RunId/binary>>
     else
-        {html_url, Value} -> rebar_dependency_submission_common:to_binary(Value);
-        false -> null
+        {html_url, Value} ->
+            rebar_dependency_submission_common:to_binary(Value);
+        false ->
+            null
     end.
 
 option(Options, Flag, EnvironmentalVariable) ->
@@ -182,9 +190,12 @@ option(Options, Flag, EnvironmentalVariable) ->
         {Flag, Value} ->
             {ok, rebar_dependency_submission_common:to_binary(Value)};
         false ->
-            rebar_dependency_submission_github:error("`--~ts` and `$~ts` are missing", [
-                string:replace(atom_to_binary(Flag), "_", "-", all), EnvironmentalVariable
-            ]),
+            rebar_dependency_submission_github:error(
+                "`--~ts` and `$~ts` are missing", [
+                    string:replace(atom_to_binary(Flag), "_", "-", all),
+                    EnvironmentalVariable
+                ]
+            ),
             {error, missing}
     end.
 

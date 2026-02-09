@@ -14,7 +14,11 @@
 %%
 %% The `error_info` module is hardcoded to `rebar_dependency_submission_common`.
 -define(stacktrace(Arguments, Cause), [
-    {?MODULE, ?FUNCTION_NAME, Arguments, [{error_info, #{module => rebar_dependency_submission_common, cause => Cause}}]}
+    {?MODULE, ?FUNCTION_NAME, Arguments, [
+        {error_info, #{
+            module => rebar_dependency_submission_common, cause => Cause
+        }}
+    ]}
     | erlang:tl(
         erlang:element(
             2,
@@ -30,14 +34,18 @@
 %% In addition the error formatting module is set to `m:rebar_dependency_submission_common`.
 -define(error(Reason, Arguments, Cause),
     erlang:error(Reason, Arguments, [
-        {error_info, #{module => rebar_dependency_submission_common, cause => Cause}}
+        {error_info, #{
+            module => rebar_dependency_submission_common, cause => Cause
+        }}
     ])
 ).
 
 %% Returns true if the given term is an Erlang string, aka a list of codepoints.
 %%
 %% Can be used in both guards and normal expressions.
--define(is_string(Term), (Term =:= "" orelse (is_list(Term) and is_integer(hd(Term))))).
+-define(is_string(Term),
+    (Term =:= "" orelse (is_list(Term) and is_integer(hd(Term))))
+).
 
 %% Debug macro that prints the given expression and its value, then returns the
 %% value. It only evaluates the given expression once.

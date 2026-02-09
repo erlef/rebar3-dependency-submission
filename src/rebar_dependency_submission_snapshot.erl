@@ -74,9 +74,11 @@ new(#{
             version => rebar_dependency_submission_common:to_binary(PluginVsn),
             url => ~"https://github.com/kivra/rebar-dependency-submission"
         },
-        scanned => calendar:system_time_to_rfc3339(erlang:system_time(millisecond), [
-            {offset, "Z"}, {unit, millisecond}, {return, binary}
-        ]),
+        scanned => calendar:system_time_to_rfc3339(
+            erlang:system_time(millisecond), [
+                {offset, "Z"}, {unit, millisecond}, {return, binary}
+            ]
+        ),
         manifests =>
             (#{
                 RebarLock => manifest(App, AppManifest, RebarLock)
@@ -95,7 +97,9 @@ manifest(App, AppManifest, RebarLock) ->
             source_location => RebarLock
         },
         metadata => #{
-            lock_version => rebar_dependency_submission_common:to_binary(maps:get(lock_version, State))
+            lock_version => rebar_dependency_submission_common:to_binary(
+                maps:get(lock_version, State)
+            )
         },
         resolved =>
             maps:from_list([
@@ -109,7 +113,9 @@ runtime_dependencies(#{applications := Applications}, App, AppManifest) ->
         fun application_dependency_graph/3, digraph:new([private]), Applications
     ),
     application_dependency_graph(App, AppManifest, RuntimeDependencies),
-    orebar_dependency_submissionets:from_list(digraph_utils:reachable([App], RuntimeDependencies)).
+    orebar_dependency_submissionets:from_list(
+        digraph_utils:reachable([App], RuntimeDependencies)
+    ).
 
 application_dependency_graph(App, AppManifest, Graph) ->
     AppVertex = digraph:add_vertex(Graph, App),
@@ -118,8 +124,12 @@ application_dependency_graph(App, AppManifest, Graph) ->
         digraph:add_edge(Graph, AppVertex, DependencyVertex)
     end,
     lists:foreach(AddDependencyEdge, maps:get(applications, AppManifest)),
-    lists:foreach(AddDependencyEdge, maps:get(included_applications, AppManifest, [])),
-    lists:foreach(AddDependencyEdge, maps:get(optional_applications, AppManifest, [])),
+    lists:foreach(
+        AddDependencyEdge, maps:get(included_applications, AppManifest, [])
+    ),
+    lists:foreach(
+        AddDependencyEdge, maps:get(optional_applications, AppManifest, [])
+    ),
     Graph.
 
 resolve_dependency(LocalName, {Version, DepLevel}, #{
@@ -131,7 +141,9 @@ resolve_dependency(LocalName, {Version, DepLevel}, #{
     Purl = to_purl(Version),
     PackageName = atom_to_binary(LocalName),
     ResolvedDependency0 = #{
-        package_url => rebar_dependency_submission_common:to_binary(purl:to_binary(Purl)),
+        package_url => rebar_dependency_submission_common:to_binary(
+            purl:to_binary(Purl)
+        ),
         metadata => #{
             local_name => LocalName,
             package_name => PackageName,
@@ -144,19 +156,29 @@ resolve_dependency(LocalName, {Version, DepLevel}, #{
                 _ -> indirect
             end,
         scope =>
-            case orebar_dependency_submissionets:is_element(LocalName, RuntimeDependencies) of
+            case
+                orebar_dependency_submissionets:is_element(
+                    LocalName, RuntimeDependencies
+                )
+            of
                 true -> runtime;
                 false -> development
             end
     },
     ResolvedDependency1 =
         case HexMetadata of
-            #{LocalName := #{~"requirements" := Requirements}} when is_list(Requirements) ->
+            #{LocalName := #{~"requirements" := Requirements}} when
+                is_list(Requirements)
+            ->
                 ResolvedDependency0#{
                     dependencies => proplists:get_keys(Requirements)
                 };
             #{} ->
-                case rebar_dependency_submission_rebar:config_if_exists(LocalName) of
+                case
+                    rebar_dependency_submission_rebar:config_if_exists(
+                        LocalName
+                    )
+                of
                     #{deps := Deps} ->
                         ResolvedDependency0#{
                             dependencies => proplists:get_keys(Deps)
@@ -174,13 +196,24 @@ to_purl(Version) ->
     end.
 
 to_purl_internal(#pkg{name = Name, version = Version}) ->
-    purl:from_resource_uri(<<"https://hex.pm/packages/", Name/binary, "/", Version/binary>>);
+    purl:from_resource_uri(
+        <<"https://hex.pm/packages/", Name/binary, "/", Version/binary>>
+    );
 to_purl_internal(#git{repo = Repo, ref = {ref, Ref}}) ->
-    purl:from_resource_uri(Repo, rebar_dependency_submission_common:to_binary(Ref));
+    purl:from_resource_uri(
+        Repo, rebar_dependency_submission_common:to_binary(Ref)
+    );
 to_purl_internal(#git_subdir{repo = Repo, ref = {ref, Ref}, subdir = SubPath0}) ->
     maybe
-        SubPath1 = binary:split(rebar_dependency_submission_common:to_binary(SubPath0), ~"/", [trim_all, global]),
-        {ok, Purl} ?= purl:from_resource_uri(Repo, rebar_dependency_submission_common:to_binary(Ref)),
+        SubPath1 = binary:split(
+            rebar_dependency_submission_common:to_binary(SubPath0), ~"/", [
+                trim_all, global
+            ]
+        ),
+        {ok, Purl} ?=
+            purl:from_resource_uri(
+                Repo, rebar_dependency_submission_common:to_binary(Ref)
+            ),
         {ok, Purl#purl{subpath = SubPath1}}
     end.
 
@@ -188,15 +221,23 @@ app_src(Directory) ->
     PathAppSrc =
         maybe
             [] ?= filelib:wildcard("src/*.app.src", Directory),
-            false ?= lists:search(fun ends_in_app_src/1, rebar_dependency_submission_common:git_ls_files(Directory)),
-            ?error(enoent, [Directory], #{reason => {file, format_error, [enoent]}})
+            false ?=
+                lists:search(
+                    fun ends_in_app_src/1,
+                    rebar_dependency_submission_common:git_ls_files(Directory)
+                ),
+            ?error(enoent, [Directory], #{
+                reason => {file, format_error, [enoent]}
+            })
         else
             {value, Path} -> Path;
             [Path] when ?is_string(Path) -> Path
         end,
     case code:where_is_file(filename:basename(PathAppSrc, ".src")) of
         non_existing ->
-            #{applications := Applications} = rebar_dependency_submission_rebar:app_src(rebar_dependency_submission_rebar:new(), PathAppSrc),
+            #{applications := Applications} = rebar_dependency_submission_rebar:app_src(
+                rebar_dependency_submission_rebar:new(), PathAppSrc
+            ),
             {App, AppSrc, _Iterator} = maps:next(maps:iterator(Applications)),
             {App, AppSrc};
         PathApp when ?is_string(PathApp) ->

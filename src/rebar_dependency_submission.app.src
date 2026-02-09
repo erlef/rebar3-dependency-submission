@@ -1,5 +1,6 @@
 {application, rebar_dependency_submission, [
-    {description, "Calculates dependencies for rebar3 and submits the list to the GitHub Dependency Submission API"},
+    {description,
+        "Calculates dependencies for rebar3 and submits the list to the GitHub Dependency Submission API"},
     {vsn, semver},
     {applications, [
         kernel,
