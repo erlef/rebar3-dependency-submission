@@ -42,7 +42,7 @@ permissions:
 jobs:
   report_rebar_deps:
     name: "Report Rebar3 Dependencies"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: kivra/rebar-dependency-submission@v1
@@ -66,7 +66,7 @@ permissions:
 jobs:
   report_rebar_deps:
     name: "Report Rebar3 Dependencies"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: kivra/rebar-dependency-submission@v1
