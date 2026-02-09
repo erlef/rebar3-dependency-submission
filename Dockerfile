@@ -1,7 +1,7 @@
 # Try to keep consistent with .tool-versions
 FROM erlang:28.3.1-slim
 
-ARG DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -qq git ca-certificates --no-install-recommends && \
     apt-get clean && \
@@ -11,7 +11,7 @@ ARG workdir=/app
 WORKDIR ${workdir}
 
 # First copy only dependency descriptors to maximize Docker layer cache reuse
-ARG NO_PLUGINS=1
+ENV NO_PLUGINS=1
 COPY rebar.config rebar.lock ./
 RUN --mount=type=ssh git config --global url."https://github.com/".insteadOf "git@github.com:" && \
     rebar3 compile --deps_only
