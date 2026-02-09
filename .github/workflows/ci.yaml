@@ -40,7 +40,7 @@ jobs:
       - name: Continuous Integration
         run: |
           git config --global url."https://github.com/".insteadOf 'git@github.com:'
-          rebar3 as test ci
+          rebar3 ci
 
       - name: Submit snapshot
         run: |
