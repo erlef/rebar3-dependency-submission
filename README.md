@@ -84,7 +84,7 @@ jobs:
 <!--| `install-deps` | Whether to run `mix deps.get` before analysis. Set to `true` for accurate transitive info.  | `false`                     |-->
 <!--| `ignore`       | A comma-separated list of directories to ignore when searching for Mix projects.            | *(none)*                    |-->
 
-<!--> ⚠️ If `install-deps` is set to `false`, the action may not fully resolve transitive dependencies, leading to an incomplete dependency graph.-->
+<!-- ⚠️ If `install-deps` is set to `false`, the action may not fully resolve transitive dependencies, leading to an incomplete dependency graph.-->
 <!-- markdownlint-enable -->
 
 ## Outputs
@@ -113,7 +113,7 @@ This action supports the following operating systems and architectures, tested u
 
 ## License
 
-Copyright 2025 Kivra
+Copyright 2026 Kivra
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
