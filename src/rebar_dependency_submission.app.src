@@ -1,8 +1,6 @@
 {application, rebar_dependency_submission, [
-    {description,
-        "Calculates dependencies for Rebar3 and submits the list to the GitHub Dependency Submission API"},
-    {vsn, git},
-    {registered, []},
+    {description, "Calculates dependencies for rebar3 and submits the list to the GitHub Dependency Submission API"},
+    {vsn, semver},
     {applications, [
         kernel,
         stdlib,
@@ -12,8 +10,5 @@
         getopt,
         purl
     ]},
-    {env, []},
-    {modules, []},
-    {licenses, ["Apache-2.0"]},
-    {links, []}
+    {licenses, ["Apache-2.0"]}
 ]}.
