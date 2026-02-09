@@ -9,8 +9,7 @@ WORKDIR ${workdir}
 
 ARG NO_PLUGINS=1
 COPY rebar.* .
-RUN rebar3 get-deps
-RUN rebar3 compile --deps_only
+RUN rebar3 compile
 
 COPY ./ .
 RUN rebar3 escriptize && cp _build/default/bin/rebar_dependency_submission /usr/bin
