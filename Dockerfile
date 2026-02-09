@@ -11,8 +11,7 @@ WORKDIR ${workdir}
 
 ARG NO_PLUGINS=1
 COPY ./ .
-RUN rebar3 compile && \
-    rebar3 escriptize && \
+RUN rebar3 escriptize && \
     cp _build/default/bin/rebar_dependency_submission /usr/bin
 
 ENTRYPOINT [ "/usr/bin/rebar_dependency_submission" ]
