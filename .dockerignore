@@ -1,14 +1,19 @@
 # Directories
-.github/
-_build/
-scripts/
-tests/
-doc/
+/.github/
+/.rebar3/
+/_*
+/_build/
+/doc/
+/doc/
+/scripts/
+/tests/
 
 # Files
-.gitignore
-.tool-versions
-action.yaml
-example.lock
-LICENSE.md
-README.md
+/.gitignore
+/.tool-versions
+/action.yaml
+/erl_crash.dump
+/example.lock
+/LICENSE.md
+/README.md
+/rebar3.crashdump
