@@ -1,0 +1,28 @@
+on:
+  - push
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
+# The API requires write permission on the repository to submit dependencies
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: erlef/setup-beam@v1.20.4
+        with:
+          version-file: .tool-versions
+          version-type: strict
+
+      - name: Build project
+        run: |
+          git config --global url."https://github.com/".insteadOf 'git@github.com:'
+          rebar3 escriptize
+
+      - name: Submit snapshot
+        run: ./_build/default/bin/rds --token ${{ github.token }}

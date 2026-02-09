@@ -1,0 +1,9 @@
+# Directories
+.github/
+_build/
+docs/
+
+# Files
+.dockerignore
+Dockerfile*
+README.md

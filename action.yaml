@@ -1,0 +1,78 @@
+name: "Rebar Dependency Submission"
+description: "Calculates dependencies for Rebar and submits the list to the GitHub Dependency Submission API"
+author: "Kivra"
+branding:
+  icon: arrow-up
+  color: blue
+inputs:
+  token:
+    description: "GitHub Personal Access Token (PAT). Defaults to PAT provided by Action runner"
+    required: false
+    default: ${{ github.token }}
+  # project-path:
+  #   required: true
+  #   description: "Repo path to the mix.exs file used to detect dependencies. Defaults to mix.exs in the root of the repository."
+  #   default: "${{ github.workspace }}"
+  # install-deps:
+  #   required: false
+  #   description: "Whether to install dependencies to improve Submission Quality."
+  #   default: "false"
+  # ignore:
+  #   required: false
+  #   description: "Paths to ignore"
+outputs:
+  submission-json-path:
+    description: "Path to the generated submission JSON file"
+    # value: "${{ steps.submit.outputs.submission-json-path }}"
+  snapshot-id:
+    description: "ID of the submission"
+    # value: "${{ steps.submit.outputs.snapshot-id }}"
+  snapshot-api-url:
+    description: "URL of the submission API"
+    # value: "${{ steps.submit.outputs.snapshot-api-url }}"
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  env:
+    GITHUB_TOKEN: ${{ inputs.token }}"
+  # steps:
+  #   - name: "Download Dependency Submission Tool"
+  #     run: >-
+  #       gh release download
+  #       "$TAG"
+  #       --repo erlef/mix-dependency-submission
+  #       --pattern "mix_dependency_submission_${{ runner.os }}_${{ runner.arch }}"
+  #       --output mix_dependency_submission
+  #     shell: "bash"
+  #     working-directory: "${{ runner.temp }}"
+  #     env:
+  #       TAG: "v1.2.2"
+  #       GITHUB_TOKEN: ${{ github.token }}
+  #   - name: "Verify Dependency Submission Tool Provenance"
+  #     run: >-
+  #       gh attestation verify
+  #       --repo erlef/mix-dependency-submission
+  #       --source-ref "refs/tags/$TAG"
+  #       mix_dependency_submission
+  #     shell: "bash"
+  #     working-directory: "${{ runner.temp }}"
+  #     env:
+  #       TAG: "v1.2.2"
+  #       GITHUB_TOKEN: ${{ github.token }}
+  #   - name: "Make Tool Executable"
+  #     run: "chmod +x mix_dependency_submission"
+  #     shell: "bash"
+  #     working-directory: "${{ runner.temp }}"
+  #   - name: "Submit Dependencies"
+  #     id: submit
+  #     run: >-
+  #       "${{ runner.temp }}/mix_dependency_submission"
+  #       --project-path="$PROJECT_PATH"
+  #       --github-token="$GITHUB_TOKEN"
+  #       ${{ inputs.install-deps == 'true' && '--install-deps' || '' }}
+  #       ${{ inputs.ignore && '--ignore="$IGNORE"' || '' }}
+  #     shell: "bash"
+  #     env:
+  #       GITHUB_TOKEN: "${{ inputs.token }}"
+  #       PROJECT_PATH: "${{ inputs.project-path }}"
+  #       IGNORE: "${{ inputs.ignore }}"

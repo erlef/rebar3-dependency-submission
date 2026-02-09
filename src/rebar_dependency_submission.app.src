@@ -1,11 +1,16 @@
 {application, rebar_dependency_submission, [
     {description,
         "Calculates dependencies for Rebar3 and submits the list to the GitHub Dependency Submission API"},
-    {vsn, "0.1.0"},
+    {vsn, git},
     {registered, []},
     {applications, [
         kernel,
-        stdlib
+        stdlib,
+        inets,
+        ssl,
+        certifi,
+        getopt,
+        purl
     ]},
     {env, []},
     {modules, []},
