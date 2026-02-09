@@ -28,8 +28,26 @@ jobs:
           version-file: .tool-versions
           version-type: strict
 
-      - name: Restore/save from/to cache
-        uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v5.0.2
+      - name: Restore from cache
+        uses: actions/cache/restore@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v5.0.2
+        with:
+          path: |
+            _build
+            ~/.cache/rebar3
+            !_build/test/logs
+          key: "cache-for\
+                -os-${{runner.os}}\
+                -otp-${{steps.setup-beam.outputs.otp-version}}\
+                -rebar3-${{steps.setup-beam.outputs.rebar3-version}}\
+                -hash-${{hashFiles('rebar.lock')}}-${{hashFiles('rebar.config')}}"
+
+      - name: Compile Dependencies
+        run: |
+          git config --global url."https://github.com/".insteadOf 'git@github.com:'
+          rebar3 compile --deps_only
+
+      - name: Save to cache
+        uses: actions/cache/save@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v5.0.2
         with:
           path: |
             _build
