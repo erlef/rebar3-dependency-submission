@@ -10,7 +10,12 @@ RUN apt-get update && \
 ARG workdir=/app
 WORKDIR ${workdir}
 
+# First copy only dependency descriptors to maximize Docker layer cache reuse
 ARG NO_PLUGINS=1
+COPY rebar.config rebar.lock ./
+RUN --mount=type=ssh git config --global url."https://github.com/".insteadOf "git@github.com:" && \
+    rebar3 compile --deps_only
+
 COPY ./ .
 RUN --mount=type=ssh git config --global url."https://github.com/".insteadOf "git@github.com:" && \
     rebar3 escriptize && \

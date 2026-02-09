@@ -38,7 +38,7 @@ runs:
   using: "docker"
   image: "Dockerfile"
   env:
-    GITHUB_TOKEN: "${{ inputs.token }}""
+    GITHUB_TOKEN: "${{ inputs.token }}"
     # steps:
     #   - name: "Download Dependency Submission Tool"
     #     run: >-

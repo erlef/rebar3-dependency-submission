@@ -13,14 +13,12 @@ set -euo pipefail
 : "${GITHUB_RUN_ID:=}"
 : "${GITHUB_SHA:=}"
 : "${GITHUB_TOKEN:=}"
-: "${GITHUB_WORKSPACE:=}"
 
 echo "Building... this may take a while..."
-docker build --build-arg "workdir=${PWD}" . || exit $?
+DOCKER_BUILD=$(docker build --quiet --build-arg "workdir=${PWD}" . || exit $?)
 echo "Done!"
 
-echo "Running... this may take a while..."
-DOCKER_BUILD=$(docker build -qq .)
+echo "Running..."
 docker run \
   --volume ".:${GITHUB_WORKSPACE}" \
   --workdir "${GITHUB_WORKSPACE}" \
