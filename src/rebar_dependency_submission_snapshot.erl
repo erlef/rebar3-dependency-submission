@@ -1,4 +1,4 @@
--module(rds_snapshot).
+-module(rebar_dependency_submission_snapshot).
 
 -export([
     new/1
@@ -52,14 +52,14 @@ Creates a snapshot of the dependency information currently available.
 
 For best result run `rebar compile` before this
 """.
--spec new(rds_options:t()) -> t().
+-spec new(rebar_dependency_submission_options:t()) -> t().
 new(#{
     correlator := Correlator,
     ref := Ref,
     run_id := RunId,
     sha := Sha
 }) ->
-    PluginVsn = rds_common:version(),
+    PluginVsn = rebar_dependency_submission_common:version(),
     {App, AppManifest} = app_src("."),
     #{
         version => 1,
@@ -71,7 +71,7 @@ new(#{
         ref => Ref,
         detector => #{
             name => ~"rebar",
-            version => rds_common:to_binary(PluginVsn),
+            version => rebar_dependency_submission_common:to_binary(PluginVsn),
             url => ~"https://github.com/kivra/rebar-dependency-submission"
         },
         scanned => calendar:system_time_to_rfc3339(erlang:system_time(millisecond), [
@@ -85,7 +85,7 @@ new(#{
     }.
 
 manifest(App, AppManifest, RebarLock) ->
-    Info = rds_rebar:from(RebarLock),
+    Info = rebar_dependency_submission_rebar:from(RebarLock),
     State = Info#{
         runtime_dependencies => runtime_dependencies(Info, App, AppManifest)
     },
@@ -95,7 +95,7 @@ manifest(App, AppManifest, RebarLock) ->
             source_location => RebarLock
         },
         metadata => #{
-            lock_version => rds_common:to_binary(maps:get(lock_version, State))
+            lock_version => rebar_dependency_submission_common:to_binary(maps:get(lock_version, State))
         },
         resolved =>
             maps:from_list([
@@ -109,7 +109,7 @@ runtime_dependencies(#{applications := Applications}, App, AppManifest) ->
         fun application_dependency_graph/3, digraph:new([private]), Applications
     ),
     application_dependency_graph(App, AppManifest, RuntimeDependencies),
-    ordsets:from_list(digraph_utils:reachable([App], RuntimeDependencies)).
+    orebar_dependency_submissionets:from_list(digraph_utils:reachable([App], RuntimeDependencies)).
 
 application_dependency_graph(App, AppManifest, Graph) ->
     AppVertex = digraph:add_vertex(Graph, App),
@@ -131,7 +131,7 @@ resolve_dependency(LocalName, {Version, DepLevel}, #{
     Purl = to_purl(Version),
     PackageName = atom_to_binary(LocalName),
     ResolvedDependency0 = #{
-        package_url => rds_common:to_binary(purl:to_binary(Purl)),
+        package_url => rebar_dependency_submission_common:to_binary(purl:to_binary(Purl)),
         metadata => #{
             local_name => LocalName,
             package_name => PackageName,
@@ -144,7 +144,7 @@ resolve_dependency(LocalName, {Version, DepLevel}, #{
                 _ -> indirect
             end,
         scope =>
-            case ordsets:is_element(LocalName, RuntimeDependencies) of
+            case orebar_dependency_submissionets:is_element(LocalName, RuntimeDependencies) of
                 true -> runtime;
                 false -> development
             end
@@ -156,7 +156,7 @@ resolve_dependency(LocalName, {Version, DepLevel}, #{
                     dependencies => proplists:get_keys(Requirements)
                 };
             #{} ->
-                case rds_rebar:config_if_exists(LocalName) of
+                case rebar_dependency_submission_rebar:config_if_exists(LocalName) of
                     #{deps := Deps} ->
                         ResolvedDependency0#{
                             dependencies => proplists:get_keys(Deps)
@@ -176,11 +176,11 @@ to_purl(Version) ->
 to_purl_internal(#pkg{name = Name, version = Version}) ->
     purl:from_resource_uri(<<"https://hex.pm/packages/", Name/binary, "/", Version/binary>>);
 to_purl_internal(#git{repo = Repo, ref = {ref, Ref}}) ->
-    purl:from_resource_uri(Repo, rds_common:to_binary(Ref));
+    purl:from_resource_uri(Repo, rebar_dependency_submission_common:to_binary(Ref));
 to_purl_internal(#git_subdir{repo = Repo, ref = {ref, Ref}, subdir = SubPath0}) ->
     maybe
-        SubPath1 = binary:split(rds_common:to_binary(SubPath0), ~"/", [trim_all, global]),
-        {ok, Purl} ?= purl:from_resource_uri(Repo, rds_common:to_binary(Ref)),
+        SubPath1 = binary:split(rebar_dependency_submission_common:to_binary(SubPath0), ~"/", [trim_all, global]),
+        {ok, Purl} ?= purl:from_resource_uri(Repo, rebar_dependency_submission_common:to_binary(Ref)),
         {ok, Purl#purl{subpath = SubPath1}}
     end.
 
@@ -188,7 +188,7 @@ app_src(Directory) ->
     PathAppSrc =
         maybe
             [] ?= filelib:wildcard("src/*.app.src", Directory),
-            false ?= lists:search(fun ends_in_app_src/1, rds_common:git_ls_files(Directory)),
+            false ?= lists:search(fun ends_in_app_src/1, rebar_dependency_submission_common:git_ls_files(Directory)),
             ?error(enoent, [Directory], #{reason => {file, format_error, [enoent]}})
         else
             {value, Path} -> Path;
@@ -196,12 +196,12 @@ app_src(Directory) ->
         end,
     case code:where_is_file(filename:basename(PathAppSrc, ".src")) of
         non_existing ->
-            #{applications := Applications} = rds_rebar:app_src(rds_rebar:new(), PathAppSrc),
+            #{applications := Applications} = rebar_dependency_submission_rebar:app_src(rebar_dependency_submission_rebar:new(), PathAppSrc),
             {App, AppSrc, _Iterator} = maps:next(maps:iterator(Applications)),
             {App, AppSrc};
         PathApp when ?is_string(PathApp) ->
             App = list_to_atom(filename:basename(PathApp, ".app")),
-            {App, rds_rebar:app_load(App)}
+            {App, rebar_dependency_submission_rebar:app_load(App)}
     end.
 
 ends_in_app_src(PathAppSrc) ->
@@ -210,6 +210,6 @@ ends_in_app_src(PathAppSrc) ->
 lock_files(Directory) ->
     [
         RebarLock
-     || RebarLock <- rds_common:git_ls_files(Directory),
+     || RebarLock <- rebar_dependency_submission_common:git_ls_files(Directory),
         filename:basename(RebarLock) =:= ~"rebar.lock"
     ].

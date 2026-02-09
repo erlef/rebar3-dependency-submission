@@ -1,4 +1,4 @@
--module(rds_options).
+-module(rebar_dependency_submission_options).
 -moduledoc """
 This module parses command line options.
 
@@ -68,7 +68,7 @@ usage() ->
     ScriptPath = escript:script_name(),
     Usage = getopt:usage_cmd_line(filename:basename(ScriptPath), ?OPTIONS),
     Options = getopt:usage_options(?OPTIONS),
-    Help = rds_common:format_markdown("~ts\n\n~ts\n", [Usage, Options]),
+    Help = rebar_dependency_submission_common:format_markdown("~ts\n\n~ts\n", [Usage, Options]),
     io:put_chars(standard_error, Help).
 
 -doc """
@@ -154,9 +154,9 @@ correlator(Options) ->
         {ok, <<Workflow/binary, "_", Job/binary>>}
     else
         {correlator, Value} ->
-            {ok, rds_common:to_binary(Value)};
+            {ok, rebar_dependency_submission_common:to_binary(Value)};
         false ->
-            rds_github:error(
+            rebar_dependency_submission_github:error(
                 "`--correlator`, `$GITHUB_WORKFLOW`, and/or `$GITHUB_JOB` are missing", []
             ),
             {error, missing}
@@ -168,7 +168,7 @@ html_url(Options, ServerURL, Repo) ->
         {ok, RunId} ?= env("GITHUB_RUN_ID"),
         <<ServerURL/binary, "/", Repo/binary, "/actions/runs/", RunId/binary>>
     else
-        {html_url, Value} -> rds_common:to_binary(Value);
+        {html_url, Value} -> rebar_dependency_submission_common:to_binary(Value);
         false -> null
     end.
 
@@ -180,9 +180,9 @@ option(Options, Flag, EnvironmentalVariable) ->
         {ok, _} ?= env(EnvironmentalVariable)
     else
         {Flag, Value} ->
-            {ok, rds_common:to_binary(Value)};
+            {ok, rebar_dependency_submission_common:to_binary(Value)};
         false ->
-            rds_github:error("`--~ts` and `$~ts` are missing", [
+            rebar_dependency_submission_github:error("`--~ts` and `$~ts` are missing", [
                 string:replace(atom_to_binary(Flag), "_", "-", all), EnvironmentalVariable
             ]),
             {error, missing}
@@ -193,5 +193,5 @@ env(EnvironmentalVariable) ->
         false ->
             false;
         Value ->
-            {ok, rds_common:to_binary(Value)}
+            {ok, rebar_dependency_submission_common:to_binary(Value)}
     end.

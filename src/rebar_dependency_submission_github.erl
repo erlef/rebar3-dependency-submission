@@ -1,7 +1,5 @@
--module(rds_github).
+-module(rebar_dependency_submission_github).
 -compile({no_auto_import, [error/3]}).
-
--compile([export_all]).
 
 -export([
     start/0,
@@ -30,14 +28,14 @@ start() ->
     public_key:cacerts_clear(),
     public_key:cacerts_load().
 
--spec submit(rds_options:t(), rds_snapshot:t()) -> {ok, Result} | {error, term()} when
+-spec submit(rebar_dependency_submission_options:t(), rebar_dependency_submission_snapshot:t()) -> {ok, Result} | {error, term()} when
     Result :: #{status := integer(), binary() => binary()}.
 submit(#{token := Token} = Flags, Snapshot) ->
     URL = api_url(Flags),
     Headers = [
         {"Accept", ~"application/vnd.github+json"},
         {"Authorization", [~"Bearer ", Token]},
-        {"User-Agent", [~"rebar3-dependency-submission/", rds_common:version()]},
+        {"User-Agent", [~"rebar3-dependency-submission/", rebar_dependency_submission_common:version()]},
         {"X-GitHub-Api-Version", ~"2022-11-28"}
     ],
     Body = json:encode(Snapshot),
@@ -172,7 +170,7 @@ add_mask(Value) ->
 workflow_command(Type, Parameters, Format, Args) when is_atom(Type) andalso is_map(Parameters) ->
     Message =
         case os:getenv("GITHUB_ACTIONS") of
-            false -> [rds_common:format_markdown(Format, Args), $\n];
+            false -> [rebar_dependency_submission_common:format_markdown(Format, Args), $\n];
             _ -> format_command(Type, Parameters, Format, Args)
         end,
     io:put_chars(standard_io, Message).
@@ -181,10 +179,10 @@ workflow_command(Type, Parameters, Format, Args) when is_atom(Type) andalso is_m
 format_command(Type, Parameters, Format, Args) when
     is_atom(Type) andalso map_size(Parameters) =:= 0
 ->
-    io_lib:format("::~ts::~ts\n", [Type, rds_common:format_markdown(Format, Args)]);
+    io_lib:format("::~ts::~ts\n", [Type, rebar_dependency_submission_common:format_markdown(Format, Args)]);
 format_command(Type, Parameters, Format, Args) when is_atom(Type) andalso is_map(Parameters) ->
     Extra = string:join(maps:fold(fun format_parameter/3, [], Parameters), ","),
-    io_lib:format("::~ts ~ts::~ts\n", [Type, Extra, rds_common:format_markdown(Format, Args)]).
+    io_lib:format("::~ts ~ts::~ts\n", [Type, Extra, rebar_dependency_submission_common:format_markdown(Format, Args)]).
 
 -doc false.
 format_parameter(Parameter, Value, Extra) ->

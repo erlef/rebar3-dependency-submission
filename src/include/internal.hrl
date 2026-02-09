@@ -12,9 +12,9 @@
 
 %% Returns the current stacktrace with the given arguments and cause in the current frame.
 %%
-%% The `error_info` module is hardcoded to `rds_common`.
+%% The `error_info` module is hardcoded to `rebar_dependency_submission_common`.
 -define(stacktrace(Arguments, Cause), [
-    {?MODULE, ?FUNCTION_NAME, Arguments, [{error_info, #{module => rds_common, cause => Cause}}]}
+    {?MODULE, ?FUNCTION_NAME, Arguments, [{error_info, #{module => rebar_dependency_submission_common, cause => Cause}}]}
     | erlang:tl(
         erlang:element(
             2,
@@ -27,10 +27,10 @@
 %% Raises an `error` with the given reason.
 %%
 %% The given arguments and cause are added to the stacktrace, see `m:erl_error`.
-%% In addition the error formatting module is set to `m:rds_common`.
+%% In addition the error formatting module is set to `m:rebar_dependency_submission_common`.
 -define(error(Reason, Arguments, Cause),
     erlang:error(Reason, Arguments, [
-        {error_info, #{module => rds_common, cause => Cause}}
+        {error_info, #{module => rebar_dependency_submission_common, cause => Cause}}
     ])
 ).
 
@@ -51,11 +51,11 @@
 end).
 
 -define(log_debug(Format, Args),
-    rds_github:debug(Format, Args)
+    rebar_dependency_submission_github:debug(Format, Args)
 ).
 
 -define(log_notice(Format, Args),
-    rds_github:notice(Format, Args, #{
+    rebar_dependency_submission_github:notice(Format, Args, #{
         file => ?FILE,
         line => ?LINE,
         endLine => ?LINE
@@ -63,7 +63,7 @@ end).
 ).
 
 -define(log_notice(Format, Args, Parameters),
-    rds_github:notice(
+    rebar_dependency_submission_github:notice(
         Format,
         Args,
         maps:merge(
@@ -78,7 +78,7 @@ end).
 ).
 
 -define(log_warning(Format, Args),
-    rds_github:warning(Format, Args, #{
+    rebar_dependency_submission_github:warning(Format, Args, #{
         file => ?FILE,
         line => ?LINE,
         endLine => ?LINE
@@ -86,7 +86,7 @@ end).
 ).
 
 -define(log_warning(Format, Args, Parameters),
-    rds_github:warning(
+    rebar_dependency_submission_github:warning(
         Format,
         Args,
         maps:merge(
@@ -101,7 +101,7 @@ end).
 ).
 
 -define(log_error(Format, Args),
-    rds_github:error(Format, Args, #{
+    rebar_dependency_submission_github:error(Format, Args, #{
         file => ?FILE,
         line => ?LINE,
         endLine => ?LINE
@@ -109,7 +109,7 @@ end).
 ).
 
 -define(log_error(Format, Args, Parameters),
-    rds_github:error(
+    rebar_dependency_submission_github:error(
         Format,
         Args,
         maps:merge(

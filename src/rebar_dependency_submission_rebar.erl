@@ -1,4 +1,4 @@
--module(rds_rebar).
+-module(rebar_dependency_submission_rebar).
 
 -export([
     consult/1,
@@ -87,7 +87,7 @@ app(#{applications := Apps} = State0, App) ->
         false ?=
             lists:search(
                 fun(Path) -> filename:basename(Path) =:= AppSrcFile end,
-                rds_common:git_ls_files(".")
+                rebar_dependency_submission_common:git_ls_files(".")
             ),
         AppSrcPattern = lists:concat(["_build/default/lib/", App, "/**/", AppSrcFile, "{,.script}"]),
         [PathAppSrc0 | _] ?= filelib:wildcard(AppSrcPattern),

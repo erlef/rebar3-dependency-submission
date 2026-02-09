@@ -13,6 +13,6 @@ RUN rebar3 get-deps
 RUN rebar3 compile --deps_only
 
 COPY ./ .
-RUN rebar3 escriptize && cp _build/default/bin/rds /usr/bin
+RUN rebar3 escriptize && cp _build/default/bin/rebar_dependency_submission /usr/bin
 
-ENTRYPOINT [ "/usr/bin/rds" ]
+ENTRYPOINT [ "/usr/bin/rebar_dependency_submission" ]

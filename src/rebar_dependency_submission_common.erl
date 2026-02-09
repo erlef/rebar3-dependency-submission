@@ -1,4 +1,4 @@
--module(rds_common).
+-module(rebar_dependency_submission_common).
 
 %% API
 -export([
