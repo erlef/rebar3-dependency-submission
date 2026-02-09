@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 # Expected input (auto-populated when in GitHub Actions)
 : "${GITHUB_WORKSPACE:=}"
