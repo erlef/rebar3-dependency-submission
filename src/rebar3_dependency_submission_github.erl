@@ -1,4 +1,4 @@
--module(rebar_dependency_submission_github).
+-module(rebar3_dependency_submission_github).
 -compile({no_auto_import, [error/3]}).
 
 -define(API, [
@@ -17,7 +17,7 @@
 -export(?API).
 -ignore_xref(?API).
 
--include("internal.hrl").
+-include("rebar3_dependency_submission_internal.hrl").
 
 start() ->
     %% Use Mozilla CA store (Rebar3 does this too)
@@ -26,8 +26,8 @@ start() ->
     public_key:cacerts_load().
 
 -spec submit(
-    rebar_dependency_submission_options:t(),
-    rebar_dependency_submission_snapshot:t()
+    rebar3_dependency_submission_options:t(),
+    rebar3_dependency_submission_snapshot:t()
 ) -> {ok, Result} | {error, term()} when
     Result :: #{status := integer(), binary() => binary()}.
 submit(#{token := Token} = Flags, Snapshot) ->
@@ -37,7 +37,7 @@ submit(#{token := Token} = Flags, Snapshot) ->
         {"Authorization", [~"Bearer ", Token]},
         {"User-Agent", [
             ~"rebar3-dependency-submission/",
-            rebar_dependency_submission_common:version()
+            rebar3_dependency_submission_common:version()
         ]},
         {"X-GitHub-Api-Version", ~"2022-11-28"}
     ],
@@ -175,7 +175,7 @@ workflow_command(Type, Parameters, Format, Args) when
         case os:getenv("GITHUB_ACTIONS") of
             false ->
                 [
-                    rebar_dependency_submission_common:format_markdown(
+                    rebar3_dependency_submission_common:format_markdown(
                         Format, Args
                     ),
                     $\n
@@ -190,7 +190,7 @@ format_command(Type, Parameters, Format, Args) when
     is_atom(Type) andalso map_size(Parameters) =:= 0
 ->
     io_lib:format("::~ts::~ts\n", [
-        Type, rebar_dependency_submission_common:format_markdown(Format, Args)
+        Type, rebar3_dependency_submission_common:format_markdown(Format, Args)
     ]);
 format_command(Type, Parameters, Format, Args) when
     is_atom(Type) andalso is_map(Parameters)
@@ -199,7 +199,7 @@ format_command(Type, Parameters, Format, Args) when
     io_lib:format("::~ts ~ts::~ts\n", [
         Type,
         Extra,
-        rebar_dependency_submission_common:format_markdown(Format, Args)
+        rebar3_dependency_submission_common:format_markdown(Format, Args)
     ]).
 
 -doc false.

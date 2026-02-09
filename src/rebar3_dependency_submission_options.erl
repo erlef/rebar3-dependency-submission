@@ -1,4 +1,4 @@
--module(rebar_dependency_submission_options).
+-module(rebar3_dependency_submission_options).
 -moduledoc """
 This module parses command line options.
 
@@ -71,9 +71,11 @@ usage() ->
     ScriptPath = escript:script_name(),
     Usage = getopt:usage_cmd_line(filename:basename(ScriptPath), ?OPTIONS),
     Options = getopt:usage_options(?OPTIONS),
-    Help = rebar_dependency_submission_common:format_markdown("~ts\n\n~ts\n", [
-        Usage, Options
-    ]),
+    Help = rebar3_dependency_submission_common:format_markdown(
+        "~ts\n\n~ts\n", [
+            Usage, Options
+        ]
+    ),
     io:put_chars(standard_error, Help).
 
 -doc """
@@ -161,9 +163,9 @@ correlator(Options) ->
         {ok, <<Workflow/binary, "_", Job/binary>>}
     else
         {correlator, Value} ->
-            {ok, rebar_dependency_submission_common:to_binary(Value)};
+            {ok, rebar3_dependency_submission_common:to_binary(Value)};
         false ->
-            rebar_dependency_submission_github:error(
+            rebar3_dependency_submission_github:error(
                 "`--correlator`, `$GITHUB_WORKFLOW`, and/or `$GITHUB_JOB` are missing",
                 []
             ),
@@ -177,7 +179,7 @@ html_url(Options, ServerURL, Repo) ->
         <<ServerURL/binary, "/", Repo/binary, "/actions/runs/", RunId/binary>>
     else
         {html_url, Value} ->
-            rebar_dependency_submission_common:to_binary(Value);
+            rebar3_dependency_submission_common:to_binary(Value);
         false ->
             null
     end.
@@ -190,9 +192,9 @@ option(Options, Flag, EnvironmentalVariable) ->
         {ok, _} ?= env(EnvironmentalVariable)
     else
         {Flag, Value} ->
-            {ok, rebar_dependency_submission_common:to_binary(Value)};
+            {ok, rebar3_dependency_submission_common:to_binary(Value)};
         false ->
-            rebar_dependency_submission_github:error(
+            rebar3_dependency_submission_github:error(
                 "`--~ts` and `$~ts` are missing", [
                     string:replace(atom_to_binary(Flag), "_", "-", all),
                     EnvironmentalVariable
@@ -206,5 +208,5 @@ env(EnvironmentalVariable) ->
         false ->
             false;
         Value ->
-            {ok, rebar_dependency_submission_common:to_binary(Value)}
+            {ok, rebar3_dependency_submission_common:to_binary(Value)}
     end.

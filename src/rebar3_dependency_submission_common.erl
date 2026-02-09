@@ -1,4 +1,4 @@
--module(rebar_dependency_submission_common).
+-module(rebar3_dependency_submission_common).
 
 %% API
 -define(API, [
@@ -11,7 +11,7 @@
 -export(?API).
 -ignore_xref(?API).
 
--include("internal.hrl").
+-include("rebar3_dependency_submission_internal.hrl").
 
 -doc "`m:erl_error` callback.".
 format_error(_, [{?MODULE, _Function, _Arguments, Info} | _StackTrace]) ->
@@ -65,7 +65,7 @@ to_list(Chardata) ->
     end.
 
 version() ->
-    {ok, PluginVsn} = application:get_key(rebar_dependency_submission, vsn),
+    {ok, PluginVsn} = application:get_key(rebar3_dependency_submission, vsn),
     PluginVsn.
 
 -doc """

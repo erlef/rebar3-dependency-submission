@@ -48,7 +48,7 @@ jobs:
 
       - name: Submit snapshot
         run: |
-          ./_build/default/bin/rebar_dependency_submission --token ${{ github.token }}
+          ./_build/default/bin/rebar3_dependency_submission --token ${{ github.token }}
 
       - name: Test 'scripts'
         run: |

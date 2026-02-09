@@ -1,4 +1,4 @@
--module(rebar_dependency_submission_rebar).
+-module(rebar3_dependency_submission_rebar).
 
 -define(API, [
     from/1,
@@ -14,8 +14,8 @@
     t/0
 ]).
 
--include("internal.hrl").
--include("records.hrl").
+-include("rebar3_dependency_submission_internal.hrl").
+-include("rebar3_dependency_submission_records.hrl").
 
 -type t() :: #{
     applications := #{
@@ -84,7 +84,7 @@ app(#{applications := Apps} = State0, App) ->
         false ?=
             lists:search(
                 fun(Path) -> filename:basename(Path) =:= AppSrcFile end,
-                rebar_dependency_submission_common:git_ls_files(".")
+                rebar3_dependency_submission_common:git_ls_files(".")
             ),
         AppSrcPattern = lists:concat([
             "_build/default/lib/", App, "/**/", AppSrcFile, "{,.script}"
