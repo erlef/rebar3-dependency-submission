@@ -84,7 +84,7 @@ jobs:
 <!--| `install-deps` | Whether to run `mix deps.get` before analysis. Set to `true` for accurate transitive info.  | `false`                     |-->
 <!--| `ignore`       | A comma-separated list of directories to ignore when searching for Mix projects.            | *(none)*                    |-->
 
-<!-- ⚠️ If `install-deps` is set to `false`, the action may not fully resolve transitive dependencies, leading to an incomplete dependency graph.-->
+<!-- > ⚠️ If `install-deps` is set to `false`, the action may not fully resolve transitive dependencies, leading to an incomplete dependency graph.-->
 <!-- markdownlint-enable -->
 
 ## Outputs
