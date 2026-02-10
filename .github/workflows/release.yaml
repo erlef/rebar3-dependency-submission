@@ -25,6 +25,6 @@ jobs:
 
       - uses: ./.github/actions/release
         with:
-          tag: ${{ github.event.inputs.tag }}
+          tag: ${{ inputs.tag }}
           github_actor: ${{ github.actor }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
