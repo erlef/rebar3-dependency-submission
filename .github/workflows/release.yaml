@@ -17,18 +17,14 @@ permissions:
 jobs:
   release:
     name: Release
-
     runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: ./.github/actions/release
         with:
-          tag: ${{ inputs.tag }}
+          tag: ${{ github.event.inputs.tag }}
           github_actor: ${{ github.actor }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
