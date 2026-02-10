@@ -15,7 +15,7 @@ set -euo pipefail
 : "${GITHUB_TOKEN:=}"
 
 echo "Building... this may take a while..."
-DOCKER_BUILD=$(DOCKER_BUILDKIT=1 docker build --ssh default --quiet --build-arg "workdir=${PWD}" . || exit $?)
+DOCKER_BUILD=$(docker build --quiet --build-arg "workdir=${PWD}" . || exit $?)
 echo "Done!"
 
 echo "Running..."
