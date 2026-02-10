@@ -45,7 +45,8 @@ jobs:
 
       - name: Continuous Integration
         run: |
-          git config --global url."https://github.com/".insteadOf 'git@github.com:'
+          git config --global \
+            url."https://github.com/".insteadOf 'git@github.com:'
           rebar3 ci
 
       - name: Save to cache
@@ -61,6 +62,7 @@ jobs:
                 -rebar3-${{steps.setup-beam.outputs.rebar3-version}}\
                 -hash-${{hashFiles('rebar.lock')}}-${{hashFiles('rebar.config')}}\
                 -${{ github.run_id }}-${{ github.run_attempt }}"
+
       - name: Submit snapshot
         run: |
           ./_build/default/bin/rebar3_dependency_submission --token ${{ github.token }}

@@ -15,7 +15,7 @@ set -euo pipefail
 : "${GITHUB_TOKEN:=}"
 
 # Debugging helper.
-if [[ "${GITHUB_ACTIONS:-false}" == "true" ]]; then
+if [[ ${GITHUB_ACTIONS:-false} == "true" ]]; then
   echo "::group::GITHUB_ environment variables"
   env | grep GITHUB_
   echo "::endgroup::"
