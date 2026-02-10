@@ -30,6 +30,7 @@ jobs:
 
       - name: Restore from cache
         uses: actions/cache/restore@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v5.0.2
+        id: restore-cache
         with:
           path: |
             _build
@@ -53,11 +54,7 @@ jobs:
             _build
             ~/.cache/rebar3
             !_build/test/logs
-          key: "cache-for\
-                -os-${{runner.os}}\
-                -otp-${{steps.setup-beam.outputs.otp-version}}\
-                -rebar3-${{steps.setup-beam.outputs.rebar3-version}}\
-                -hash-${{hashFiles('rebar.lock')}}-${{hashFiles('rebar.config')}}"
+          key: ${{ steps.restore-cache.outputs.cache-primary-key }}
 
       - name: Submit snapshot
         run: |
