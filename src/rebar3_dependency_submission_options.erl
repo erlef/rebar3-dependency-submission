@@ -36,7 +36,7 @@ messages to standard error and exit with a non-zero status code.
     {run_id, $i, "run-id", utf8_binary,
         "The external ID of the job. Defaults to `$GITHUB_RUN_ID`."},
     {server_url, $u, "server-url", utf8_binary,
-        "The URL for the GitHub server. Defaults to `$GITHUB_SERVER_URL`."},
+        "The URL for the GitHub server. Defaults to `$GITHUB_SERVER_URL`, then `https://github.com`."},
     {sha, $s, "sha", utf8_binary,
         "The commit SHA associated with this dependency snapshot. Maximum length: 40 characters. Defaults to `$GITHUB_SHA`."},
     {token, $t, "token", utf8_binary,
@@ -102,7 +102,7 @@ parse(CommandLineArguments) ->
         MaybeRunId = option(Options, run_id, "GITHUB_RUN_ID"),
         MaybeSha = option(Options, sha, "GITHUB_SHA"),
         MaybeToken = option(Options, token, "GITHUB_TOKEN"),
-        MaybeServerURL = option(Options, server_url, "GITHUB_SERVER_URL"),
+        MaybeServerURL = server_url(Options),
         {ok, ApiUrl} ?= MaybeApiUrl,
         {ok, Correlator} ?= MaybeCorrelator,
         {ok, Ref} ?= MaybeRef,
@@ -142,6 +142,13 @@ attempt(Options) ->
         {ok, undefined} ?= {ok, proplists:get_value(attempt, Options)},
         false ?= env("GITHUB_RUN_ATTEMPT"),
         {ok, 0}
+    end.
+
+server_url(Options) ->
+    maybe
+        {ok, undefined} ?= {ok, proplists:get_value(server_url, Options)},
+        false ?= env("GITHUB_SERVER_URL"),
+        {ok, ~"https://github.com"}
     end.
 
 api_url(Options) ->
