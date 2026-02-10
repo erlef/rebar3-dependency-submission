@@ -95,7 +95,7 @@ parse(CommandLineArguments) ->
         %% We fetch first and then match to print all missing options and not
         %% just the first one
         MaybeApiUrl = api_url(Options),
-        MaybeAttempt = option(Options, attempt, "GITHUB_RUN_ATTEMPT"),
+        MaybeAttempt = attempt(Options),
         MaybeCorrelator = correlator(Options),
         MaybeRef = option(Options, ref, "GITHUB_REF"),
         MaybeRepo = option(Options, repo, "GITHUB_REPOSITORY"),
@@ -135,6 +135,13 @@ help(Options) ->
     case proplists:get_bool(help, Options) of
         true -> help;
         false -> no_help
+    end.
+
+attempt(Options) ->
+    maybe
+        {ok, undefined} ?= {ok, proplists:get_value(attempt, Options)},
+        false ?= env("GITHUB_RUN_ATTEMPT"),
+        {ok, 0}
     end.
 
 api_url(Options) ->
