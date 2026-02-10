@@ -1,7 +1,7 @@
 {application, rebar3_dependency_submission, [
     {description,
         "Calculates dependencies for Rebar3 and submits the list to the GitHub Dependency Submission API"},
-    {vsn, semver},
+    {vsn, "1.0.0"}, % release-TAG
     {applications, [
         kernel,
         stdlib,

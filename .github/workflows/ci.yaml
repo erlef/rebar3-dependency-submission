@@ -2,7 +2,7 @@
 name: Continuous Integration
 
 on:
-  - pull_request
+  pull_request:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -15,11 +15,10 @@ permissions:
   packages: write
 
 jobs:
-  ci:
-    runs-on: ubuntu-24.04
+  continuous_integration:
+    name: Continuous Integration
 
-    strategy:
-      fail-fast: false
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
@@ -74,38 +73,9 @@ jobs:
         run: |
           ./_build/default/bin/rebar3_dependency_submission --token ${{ github.token }}
 
-      - name: Set up Buildx
-        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build Docker image
-        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
-        id: build-push-action
-        with:
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          context: .
-          push: true
-          tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
-
-      - name: Run Docker image
+      - name: Test release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          docker run \
-            --volume ".:${GITHUB_WORKSPACE}" \
-            --env GITHUB_API_URL="${GITHUB_API_URL}" \
-            --env GITHUB_SERVER_URL="${GITHUB_SERVER_URL}" \
-            --env GITHUB_WORKFLOW="${GITHUB_WORKFLOW}" \
-            --env GITHUB_JOB="${GITHUB_JOB}" \
-            --env GITHUB_REF="${GITHUB_REF}" \
-            --env GITHUB_REPOSITORY="${GITHUB_REPOSITORY}" \
-            --env GITHUB_RUN_ID="${GITHUB_RUN_ID}" \
-            --env GITHUB_SHA="${GITHUB_SHA}" \
-            --env GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-            "ghcr.io/${{ github.repository }}@${{ steps.build-push-action.outputs.digest }}" \
-            "$@"
+          gh workflow run release.yaml \
+            --ref ${{ github.ref }}
