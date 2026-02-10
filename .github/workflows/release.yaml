@@ -75,9 +75,9 @@ jobs:
             "ghcr.io/${{ github.repository }}@${{ steps.build-push-action.outputs.digest }}" \
             "$@"
 
-    - name: Create a GitHub release
-      if: github.event_name == 'workflow_dispatch' && inputs.tag != ''
-      run: |
-        gh release create ${{ inputs.tag }} --generate-notes --latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create a GitHub release
+        if: github.event_name == 'workflow_dispatch' && inputs.tag != ''
+        run: |
+          gh release create ${{ inputs.tag }} --generate-notes --latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
