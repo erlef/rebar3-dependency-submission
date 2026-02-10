@@ -22,7 +22,7 @@ messages to standard error and exit with a non-zero status code.
     {help, $h, "help", boolean, "Show this help message"},
 
     {api_url, $a, "api-url", utf8_binary,
-        "The URL for GitHub's API. Defaults to `$GITHUB_API_URL`, then \"api.github.com\"."},
+        "The URL for GitHub's API. Defaults to `$GITHUB_API_URL`, then \"https://api.github.com\"."},
     {attempt, $e, "attempt", utf8_binary,
         "The attempt number of the job. Defaults to `$GITHUB_RUN_ATTEMPT`, then `0`."},
     {correlator, $c, "correlator", utf8_binary,
