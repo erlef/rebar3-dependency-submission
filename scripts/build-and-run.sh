@@ -14,6 +14,11 @@ set -euo pipefail
 : "${GITHUB_SHA:=}"
 : "${GITHUB_TOKEN:=}"
 
+# Debugging helper.
+echo "::group::GITHUB_ environment variables"
+env | grep GITHUB_
+echo "::endgroup::"
+
 echo "Building... this may take a while..."
 DOCKER_BUILD=$(docker build --quiet --build-arg "workdir=${PWD}" . || exit $?)
 echo "Done!"
