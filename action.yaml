@@ -11,29 +11,6 @@ inputs:
     description: "GitHub Personal Access Token (PAT). Defaults to PAT provided by Action runner"
     required: false
     default: "${{ github.token }}"
-    # project-path:
-    #   required: true
-    # description: >
-    #   Repo path to the mix.exs file used to detect dependencies.
-    #   Defaults to mix.exs in the root of the repository.
-    #   default: "${{ github.workspace }}"
-    # install-deps:
-    #   required: false
-    #   description: "Whether to install dependencies to improve Submission Quality."
-    #   default: "false"
-    # ignore:
-    #   required: false
-    #   description: "Paths to ignore"
-outputs:
-  submission-json-path:
-    description: "Path to the generated submission JSON file"
-    # value: "${{ steps.submit.outputs.submission-json-path }}"
-  snapshot-id:
-    description: "ID of the submission"
-    # value: "${{ steps.submit.outputs.snapshot-id }}"
-  snapshot-api-url:
-    description: "URL of the submission API"
-    # value: "${{ steps.submit.outputs.snapshot-api-url }}"
 runs:
   using: "docker"
   image: "Dockerfile"

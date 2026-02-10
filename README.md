@@ -28,50 +28,19 @@ This action is intended to be used within a GitHub Actions workflow.
 ### Minimal Example
 
 ```yaml
-name: "Rebar3 Dependency Submission"
-
 on:
   push:
-    branches:
-      - "main"
 
 # The API requires write permission on the repository to submit dependencies
 permissions:
   contents: write
 
 jobs:
-  report_rebar_deps:
-    name: "Report Rebar3 Dependencies"
+  rebar-dependency-submission:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: kivra/rebar-dependency-submission@v1
-```
-
-### Example Using `actions/dependency-review-action`
-
-```yaml
-name: "Rebar3 Dependency Submission"
-
-on:
-  push:
-    branches:
-      - "main"
-  pull_request: {}
-
-# The API requires write permission on the repository to submit dependencies
-permissions:
-  contents: write
-
-jobs:
-  report_rebar_deps:
-    name: "Report Rebar3 Dependencies"
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: kivra/rebar-dependency-submission@v1
-      - uses: actions/dependency-review-action@v4
-        if: "${{ github.event_name == 'pull_request' }}"
 ```
 
 ## Inputs
@@ -79,24 +48,9 @@ jobs:
 | Name           | Description                                                                                 | Default                     |
 |----------------|---------------------------------------------------------------------------------------------|-----------------------------|
 | `token`        | GitHub token to use for submission.                                                         | `${{ github.token }}`       |
-<!-- markdownlint-disable MD013 -->
-<!--| `project-path` | Path to the Mix project.                                                                    | `${{ github.workspace }}`   |-->
-<!--| `install-deps` | Whether to run `mix deps.get` before analysis. Set to `true` for accurate transitive info.  | `false`                     |-->
-<!--| `ignore`       | A comma-separated list of directories to ignore when searching for Mix projects.            | *(none)*                    |-->
-
-<!-- > ⚠️ If `install-deps` is set to `false`, the action may not fully resolve transitive dependencies, leading to an incomplete dependency graph.-->
-<!-- markdownlint-enable -->
-
-## Outputs
-
-| Name                   | Description                                 | Example Value                                                                 |
-|------------------------|---------------------------------------------|-------------------------------------------------------------------------------|
-| `submission-json-path` | Path to the generated submission JSON file. | `/tmp/submission-213124323.json`                                              |
-| `snapshot-id`          | ID of the submission.                       | `1234`                                                                        |
-| `snapshot-api-url`     | URL of the submission API.                  | `https://api.github.com/repos/{owner}/{repo}/dependency-graph/snapshots/1234` |
 
 <!--
-## OS and Architecture Support
+## OS and Architecture Support TBD
 
 This action supports the following operating systems and architectures, tested using the corresponding
 [GitHub-hosted runners](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources):
