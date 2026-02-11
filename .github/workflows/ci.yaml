@@ -5,7 +5,8 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  # The API requires write permission on the repository to submit dependencies
+  contents: write
 
 jobs:
   continuous_integration:
