@@ -1,6 +1,0 @@
-case os:getenv("NO_PLUGINS") of
-    false ->
-        CONFIG;
-    _ ->
-        proplists:delete(plugins, proplists:delete(project_plugins, CONFIG))
-end.

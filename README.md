@@ -34,8 +34,6 @@ on:
 permissions:
   # The API requires write permission on the repository to submit dependencies
   contents: write
-  # This is required to fetch the remote package (Docker container with the tool)
-  packages: read
 
 jobs:
   rebar3-dependency-submission:
@@ -48,9 +46,9 @@ jobs:
 
 ## Inputs
 
-| Name           | Description                                                                                 | Default                     |
-|----------------|---------------------------------------------------------------------------------------------|-----------------------------|
-| `token`        | GitHub token to use for submission.                                                         | `${{ github.token }}`       |
+| Name    | Description                         | Default               |
+|---------|-------------------------------------|-----------------------|
+| `token` | GitHub token to use for submission. | `${{ github.token }}` |
 
 ## OS and Architecture Support
 
