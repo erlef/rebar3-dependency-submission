@@ -7,8 +7,7 @@ on:
       - v[0-9]+.[0-9]+.[0-9]+
 
 permissions:
-  # The API requires write permission on the repository to submit dependencies
-  contents: write
+  contents: read
   # The following are for attestation purposes
   id-token: write
   attestations: write
