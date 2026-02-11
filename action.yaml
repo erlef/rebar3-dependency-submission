@@ -1,59 +1,46 @@
 ---
-name: "Rebar3 Dependency Submission"
+name: Rebar3 Dependency Submission
 # yamllint disable-line rule:line-length
-description: "Calculates dependencies for Rebar3 and submits the list to the GitHub Dependency Submission API"
-author: "Kivra"
+description: Calculates dependencies for Rebar3 and submits the list to the GitHub Dependency Submission API
+
+author: Kivra
+
 branding:
-  icon: "arrow-up"
-  color: "blue"
+  icon: arrow-up
+  color: blue
+
 inputs:
   token:
-    description: "GitHub Personal Access Token (PAT). Defaults to PAT provided by Action runner"
+    description: GitHub Personal Access Token (PAT). Defaults to PAT provided by Action runner
     required: false
-    default: "${{ github.token }}"
+    default: ${{ github.token }}
+
 runs:
-  using: "docker"
-  image: "Dockerfile"
-  env:
-    GITHUB_TOKEN: "${{ inputs.token }}"
-    # steps:
-    #   - name: "Download Dependency Submission Tool"
-    #     run: >-
-    #       gh release download
-    #       "$TAG"
-    #       --repo erlef/mix-dependency-submission
-    #       --pattern "mix_dependency_submission_${{ runner.os }}_${{ runner.arch }}"
-    #       --output mix_dependency_submission
-    #     shell: "bash"
-    #     working-directory: "${{ runner.temp }}"
-    #     env:
-    #       TAG: "v1.2.2"
-    #       GITHUB_TOKEN: "${{ github.token }}"
-    #   - name: "Verify Dependency Submission Tool Provenance"
-    #     run: >-
-    #       gh attestation verify
-    #       --repo erlef/mix-dependency-submission
-    #       --source-ref "refs/tags/$TAG"
-    #       mix_dependency_submission
-    #     shell: "bash"
-    #     working-directory: "${{ runner.temp }}"
-    #     env:
-    #       TAG: "v1.2.2"
-    #       GITHUB_TOKEN: "${{ github.token }}"
-    #   - name: "Make Tool Executable"
-    #     run: "chmod +x mix_dependency_submission"
-    #     shell: "bash"
-    #     working-directory: "${{ runner.temp }}"
-    #   - name: "Submit Dependencies"
-    #     id: "submit"
-    #     run: >-
-    #       "${{ runner.temp }}/mix_dependency_submission"
-    #       --project-path="$PROJECT_PATH"
-    #       --github-token="$GITHUB_TOKEN"
-    #       ${{ inputs.install-deps == 'true' && '--install-deps' || '' }}
-    #       ${{ inputs.ignore && '--ignore="$IGNORE"' || '' }}
-    #     shell: "bash"
-    #     env:
-    #       GITHUB_TOKEN: "${{ inputs.token }}"
-    #       PROJECT_PATH: "${{ inputs.project-path }}"
-    #       IGNORE: "${{ inputs.ignore }}"
+  using: composity
+
+  steps:
+    - name: Verify Dependency Submission Tool Provenance
+      env:
+        REPO: kivra/rebar3-dependency-submission
+        TAG: 1.0.0-beta.2 # release-TAG
+        GH_TOKEN: ${{ inputs.token }}
+      run: |
+        gh attestation verify \
+          "oci://ghcr.io/${REPO}:${TAG}" \
+          --repo "${REPO}" \
+          --source-ref "refs/tags/${TAG}"
+      shell: bash
+      working-directory: ${{ runner.temp }}
+
+    - name: Run Dependency Submission
+      env:
+        REPO: kivra/rebar3-dependency-submission
+        TAG: 1.0.0-beta.2 # release-TAG
+      run: |
+        docker run \
+          --rm \
+          --env GITHUB_TOKEN="${{ inputs.token }}" \
+          --env GITHUB_REPOSITORY="${{ github.repository }}" \
+          --volume "${{ github.workspace }}:${{ github.workspace }}" \
+          "ghcr.io/${REPO}:${TAG}"
+      shell: bash
