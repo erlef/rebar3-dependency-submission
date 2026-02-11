@@ -39,15 +39,15 @@ runs:
         docker run \
           --rm \
           --volume "${{ github.workspace }}:${{ github.workspace }}" \
+          --env GITHUB_TOKEN="${{ inputs.github_token }}" \
+          --env GITHUB_REPOSITORY="${GITHUB_REPOSITORY}" \
           --env GITHUB_API_URL="${GITHUB_API_URL}" \
           --env GITHUB_SERVER_URL="${GITHUB_SERVER_URL}" \
-          --env GITHUB_WORKFLOW="${GITHUB_WORKFLOW}" \
           --env GITHUB_JOB="${GITHUB_JOB}" \
           --env GITHUB_REF="${GITHUB_REF}" \
-          --env GITHUB_REPOSITORY="${GITHUB_REPOSITORY}" \
           --env GITHUB_RUN_ID="${GITHUB_RUN_ID}" \
           --env GITHUB_SHA="${GITHUB_SHA}" \
-          --env GITHUB_TOKEN="${{ inputs.github_token }}" \
+          --env GITHUB_WORKFLOW="${GITHUB_WORKFLOW}" \
           "ghcr.io/${{ github.repository }}@${{ steps.build-push-action.outputs.digest }}"
       shell: bash
 

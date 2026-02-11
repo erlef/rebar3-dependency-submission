@@ -46,6 +46,11 @@ runs:
           --rm \
           --env GITHUB_TOKEN="${{ inputs.token }}" \
           --env GITHUB_REPOSITORY="${{ github.repository }}" \
+          --env GITHUB_JOB="${{ github.job }}" \
+          --env GITHUB_REF="${{ github.ref }}" \
+          --env GITHUB_RUN_ID="${{ github.run_id }}" \
+          --env GITHUB_SHA="${{ github.sha }}" \
+          --env GITHUB_WORKFLOW="${{ github.workflow }}" \
           --volume "${{ github.workspace }}:${{ github.workspace }}" \
           "ghcr.io/${REPO}:${{ inputs.tag }}"
       shell: bash
