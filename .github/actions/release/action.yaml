@@ -78,4 +78,5 @@ runs:
       uses: ${{ github.repository }}@${{ github.head_ref }}
       with:
         token: ${{ inputs.github_token }}
+        tag: ${{ inputs.tag }}
       shell: bash
