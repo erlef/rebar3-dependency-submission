@@ -20,6 +20,13 @@ runs:
   using: composite
 
   steps:
+    - name: Log in to GHCR
+      uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ inputs.token }}
+
     - name: Verify Dependency Submission Tool Provenance
       env:
         TAG: v1.0.0-beta.3 # release-TAG
