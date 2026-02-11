@@ -52,7 +52,7 @@ runs:
       shell: bash
 
     - name: Create a GitHub release
-      if: github.event_name == 'workflow_dispatch' && inputs.tag != ''
+      if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.tag != ''
       run: |
         gh release create "${{ inputs.tag }}" --generate-notes
       env:
@@ -60,7 +60,7 @@ runs:
       shell: bash
 
     - name: Update GitHub Release
-      if: github.event_name == 'workflow_dispatch' && inputs.tag != ''
+      if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.tag != ''
       run: |
         PREV_NOTES=$(gh release view "${{ inputs.tag }}" --json body --template '{{.body}}')
         gh release edit "${{ inputs.tag }}" \
@@ -74,7 +74,7 @@ runs:
       shell: bash
 
     - name: Test it as a shared action
-      if: github.event_name == 'workflow_dispatch' && inputs.tag != ''
+      if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.tag != ''
       uses: kivra/rebar3-dependency-submission@v1.0.0-beta.3 # release-tag
       with:
         token: ${{ inputs.github_token }}
