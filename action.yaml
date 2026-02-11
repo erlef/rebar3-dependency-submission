@@ -28,7 +28,7 @@ runs:
       env:
         # TBD(erlef): update REPO
         REPO: kivra/rebar3-dependency-submission
-        GH_TOKEN: ${{ inputs.token }}
+        GITHUB_TOKEN: ${{ inputs.token }}
       run: |
         gh attestation verify \
           "oci://ghcr.io/${REPO}:${{ inputs.tag }}" \
