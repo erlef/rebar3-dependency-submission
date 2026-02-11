@@ -72,9 +72,3 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       shell: bash
-
-    - name: Test it as a shared action
-      if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.tag != ''
-      uses: kivra/rebar3-dependency-submission@v1.0.0-beta.3 # release-tag
-      with:
-        token: ${{ inputs.github_token }}
