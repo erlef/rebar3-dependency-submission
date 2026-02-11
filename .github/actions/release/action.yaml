@@ -73,14 +73,8 @@ runs:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       shell: bash
 
-    # I'm using this temporarily, to test my branches changes, and it can potentially
-    # be done, when required, for specific tags, but since uses: can't access templated
-    # elements we need to update the branch by hand
-    # TBD: before merge this should ALWAYS be commented out
     - name: Test it as a shared action
-      if: github.event_name == 'pull_request'
-      # TBD(erlef): update uses
-      uses: kivra/rebar3-dependency-submission@fix/initial-version-5
+      if: github.event_name == 'workflow_dispatch' && inputs.tag != ''
+      uses: kivra/rebar3-dependency-submission@v1.0.0-beta.3 # release-tag
       with:
         token: ${{ inputs.github_token }}
-        tag: ${{ inputs.tag }}

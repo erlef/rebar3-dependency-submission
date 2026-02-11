@@ -15,10 +15,6 @@ inputs:
     description: GitHub Personal Access Token (PAT). Defaults to PAT provided by Action runner
     required: false
     default: ${{ github.token }}
-  tag:
-    description: Mostly for tests. Normally you wouldn't change this
-    required: false
-    default: 1.0.0-beta.2 # release-TAG
 
 runs:
   using: composite
@@ -26,19 +22,21 @@ runs:
   steps:
     - name: Verify Dependency Submission Tool Provenance
       env:
+        TAG: 1.0.0-beta.3 # release-TAG
         # TBD(erlef): update REPO
         REPO: kivra/rebar3-dependency-submission
         GITHUB_TOKEN: ${{ inputs.token }}
       run: |
         gh attestation verify \
-          "oci://ghcr.io/${REPO}:${{ inputs.tag }}" \
+          "oci://ghcr.io/${REPO}:${TAG}" \
           --repo "${REPO}" \
-          --source-ref "refs/tags/${{ inputs.tag }}"
+          --source-ref "refs/tags/${TAG}"
       shell: bash
       working-directory: ${{ runner.temp }}
 
     - name: Run Dependency Submission
       env:
+        TAG: 1.0.0-beta.3 # release-TAG
         # TBD(erlef): update REPO
         REPO: kivra/rebar3-dependency-submission
       run: |
@@ -52,5 +50,5 @@ runs:
           --env GITHUB_SHA="${{ github.sha }}" \
           --env GITHUB_WORKFLOW="${{ github.workflow }}" \
           --volume "${{ github.workspace }}:/app" \
-          "ghcr.io/${REPO}:${{ inputs.tag }}"
+          "ghcr.io/${REPO}:${TAG}"
       shell: bash
