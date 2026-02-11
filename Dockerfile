@@ -9,6 +9,7 @@ RUN apt-get update && \
 
 # First copy only dependency descriptors to maximize Docker layer cache reuse
 ENV NO_PLUGINS=1
+WORKDIR /app
 COPY rebar.config rebar.lock ./
 
 RUN git config --global --add safe.directory /app && \

@@ -52,7 +52,7 @@
 -doc """
 Creates a snapshot of the dependency information currently available.
 
-For best result run `rebar compile` before this
+For best result run `rebar3 compile` before this
 """.
 -spec new(rebar3_dependency_submission_options:t()) -> t().
 new(#{
@@ -72,9 +72,10 @@ new(#{
         sha => Sha,
         ref => Ref,
         detector => #{
-            name => ~"rebar",
+            name => ~"rebar3",
             version => rebar3_dependency_submission_common:to_binary(PluginVsn),
-            url => ~"https://github.com/kivra/rebar-dependency-submission"
+            % TBD(erlef): update url
+            url => ~"https://github.com/kivra/rebar3-dependency-submission"
         },
         scanned => calendar:system_time_to_rfc3339(
             erlang:system_time(millisecond), [
@@ -89,7 +90,7 @@ new(#{
     }.
 
 manifest(App, AppManifest, RebarLock) ->
-    Info = rebar3_dependency_submission_rebar:from(RebarLock),
+    Info = rebar3_dependency_submission_rebar3:from(RebarLock),
     State = Info#{
         runtime_dependencies => runtime_dependencies(Info, App, AppManifest)
     },
@@ -177,7 +178,7 @@ resolve_dependency(LocalName, {Version, DepLevel}, #{
                 };
             #{} ->
                 case
-                    rebar3_dependency_submission_rebar:config_if_exists(
+                    rebar3_dependency_submission_rebar3:config_if_exists(
                         LocalName
                     )
                 of
@@ -237,14 +238,14 @@ app_src(Directory) ->
         end,
     case code:where_is_file(filename:basename(PathAppSrc, ".src")) of
         non_existing ->
-            #{applications := Applications} = rebar3_dependency_submission_rebar:app_src(
-                rebar3_dependency_submission_rebar:new(), PathAppSrc
+            #{applications := Applications} = rebar3_dependency_submission_rebar3:app_src(
+                rebar3_dependency_submission_rebar3:new(), PathAppSrc
             ),
             {App, AppSrc, _Iterator} = maps:next(maps:iterator(Applications)),
             {App, AppSrc};
         PathApp when ?is_string(PathApp) ->
             App = list_to_atom(filename:basename(PathApp, ".app")),
-            {App, rebar3_dependency_submission_rebar:app_load(App)}
+            {App, rebar3_dependency_submission_rebar3:app_load(App)}
     end.
 
 ends_in_app_src(PathAppSrc) ->
