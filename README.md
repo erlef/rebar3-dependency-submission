@@ -31,9 +31,11 @@ This action is intended to be used within a GitHub Actions workflow.
 on:
   push:
 
-# The API requires write permission on the repository to submit dependencies
 permissions:
+  # The API requires write permission on the repository to submit dependencies
   contents: write
+  # This is required to fetch the remote package (Docker container with the tool)
+  packages: read
 
 jobs:
   rebar3-dependency-submission:

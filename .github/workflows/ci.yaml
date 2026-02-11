@@ -9,6 +9,8 @@ permissions:
   contents: write
   actions: write
   packages: write
+  id-token: write
+  attestations: write
 
 jobs:
   continuous_integration:
