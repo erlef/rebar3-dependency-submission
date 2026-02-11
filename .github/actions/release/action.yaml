@@ -72,3 +72,10 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       shell: bash
+
+    - name: Test it as a shared action
+      if: github.event_name == 'pull_request'
+      uses: ${{ github.repository }}@${{ github.head_ref }}
+      with:
+        token: ${{ inputs.github_token }}
+      shell: bash
