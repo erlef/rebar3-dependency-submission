@@ -33,6 +33,7 @@ runs:
         context: .
         push: true
         tags: ghcr.io/${{ github.repository }}:${{ inputs.tag }}
+        provenance: sbom
 
     - name: Run Docker image
       run: |
