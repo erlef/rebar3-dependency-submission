@@ -74,6 +74,7 @@ new(#{
         detector => #{
             name => ~"rebar3",
             version => rebar3_dependency_submission_common:to_binary(PluginVsn),
+            % TBD(erlef): update url
             url => ~"https://github.com/kivra/rebar3-dependency-submission"
         },
         scanned => calendar:system_time_to_rfc3339(

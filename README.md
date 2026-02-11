@@ -40,6 +40,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
+      # TBD(erlef): update uses
       - uses: kivra/rebar3-dependency-submission@v1
 ```
 
@@ -68,6 +69,8 @@ This action supports the following operating systems and architectures, tested u
 ## License
 
 Copyright 2026 Kivra
+
+<!-- # TBD(erlef): Copyright? -->
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.

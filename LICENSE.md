@@ -176,6 +176,8 @@ Copyright 2025, Max Sörliden Nordlund <max.nordlund@kivra.com>.
 
 Copyright 2026, Kivra AB.
 
+<!-- # TBD(erlef): Copyright? -->
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at

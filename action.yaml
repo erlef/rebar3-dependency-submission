@@ -3,6 +3,7 @@ name: Rebar3 Dependency Submission
 # yamllint disable-line rule:line-length
 description: Calculates dependencies for Rebar3 and submits the list to the GitHub Dependency Submission API
 
+# TBD(erlef): author
 author: Kivra
 
 branding:
@@ -25,6 +26,7 @@ runs:
   steps:
     - name: Verify Dependency Submission Tool Provenance
       env:
+        # TBD(erlef): update REPO
         REPO: kivra/rebar3-dependency-submission
         GH_TOKEN: ${{ inputs.token }}
       run: |
@@ -37,6 +39,7 @@ runs:
 
     - name: Run Dependency Submission
       env:
+        # TBD(erlef): update REPO
         REPO: kivra/rebar3-dependency-submission
       run: |
         docker run \
