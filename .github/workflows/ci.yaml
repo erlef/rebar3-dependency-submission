@@ -53,8 +53,8 @@ jobs:
 
       - name: Run Continuous Integration
         run: |
-          git config --global \
-            url."https://github.com/".insteadOf 'git@github.com:'
+          git config \
+            --global url."https://github.com/".insteadOf 'git@github.com:'
           rebar3 ci
 
       - name: Save Erlang cache
@@ -74,7 +74,8 @@ jobs:
 
       - name: Test local dependency submission
         run: |
-          ./_build/default/bin/rebar3_dependency_submission --token "${{ secrets.GITHUB_TOKEN }}"
+          ./_build/default/bin/rebar3_dependency_submission \
+            --token "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Attest provenance
         id: attest-provenance
@@ -85,16 +86,15 @@ jobs:
 
       - name: Copy provenance
         if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
-        run: |
-            cp \
-              "${{ steps.attest-provenance.outputs.bundle-path }}" \
-              _build/default/bin/rebar3_dependency_submission.sigstore
+        run: >-
+          cp "${{ steps.attest-provenance.outputs.bundle-path }}"
+             _build/default/bin/rebar3_dependency_submission.sigstore
 
       - name: Create a GitHub release
         if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
-        run: |
-          gh release create \
-            --generate-notes \
-            "${{ inputs.tag }}" \
+        run: >-
+          gh release create
+            --generate-notes
+            "${{ inputs.tag }}"
             _build/default/bin/rebar3_dependency_submission*
         shell: bash

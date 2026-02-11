@@ -20,44 +20,48 @@ runs:
   using: composite
 
   steps:
-    - name: Log in to GHCR
-      uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ inputs.token }}
-
-    - name: Verify Dependency Submission Tool Provenance
+    - name: Download Dependency Submission Tool
       env:
-        TAG: v1.0.0-beta.5 # release-TAG
+        TAG: v1.0.0-beta.7 # release-TAG
         # TBD(erlef): update REPO
         REPO: kivra/rebar3-dependency-submission
         GITHUB_TOKEN: ${{ inputs.token }}
-      run: |
-        gh attestation verify \
-          "oci://ghcr.io/${REPO}:${TAG}" \
-          --repo "${REPO}" \
-          --source-ref "refs/tags/${TAG}"
+      run: >-
+        gh release download
+          "${TAG}"
+          --repo "${REPO}"
+          --pattern rebar3_dependency_submission
+          --output rebar3_dependency_submission
       shell: bash
       working-directory: ${{ runner.temp }}
 
-    - name: Run Dependency Submission
+    - name: Verify Dependency Submission Tool Provenance
       env:
-        TAG: v1.0.0-beta.5 # release-TAG
+        TAG: v1.0.0-beta.7 # release-TAG
         # TBD(erlef): update REPO
         REPO: kivra/rebar3-dependency-submission
+        GITHUB_TOKEN: ${{ inputs.token }}
+      run: >-
+        gh attestation verify
+          --repo "${REPO}"
+          --source-ref refs/tags/"${TAG}"
+          rebar3_dependency_submission
+      shell: bash
+      working-directory: ${{ runner.temp }}
+
+    - name: Make Tool Executable
+      run: chmod +x rebar3_dependency_submission
+      shell: bash
+      working-directory: ${{ runner.temp }}
+
+    - name: Install Erlang
+      uses: erlef/setup-beam@e6d7c94229049569db56a7ad5a540c051a010af9 # v1.20.4
+      with:
+        # Try to keep consistent with ci.yaml
+        otp-version: 28.3.1
+        rebar3-version: 3.26.0
+
+    - name: Run Dependency Submission
       run: |
-        docker run \
-          --rm \
-          --env GITHUB_TOKEN="${{ inputs.token }}" \
-          --env GITHUB_REPOSITORY="${{ github.repository }}" \
-          --env GITHUB_API_URL="${{ github.api_url }}" \
-          --env GITHUB_SERVER_URL="${{ github.server_url }}" \
-          --env GITHUB_JOB="${{ github.job }}" \
-          --env GITHUB_REF="${{ github.ref }}" \
-          --env GITHUB_RUN_ID="${{ github.run_id }}" \
-          --env GITHUB_SHA="${{ github.sha }}" \
-          --env GITHUB_WORKFLOW="${{ github.workflow }}" \
-          --volume "${{ github.workspace }}:/app" \
-          "ghcr.io/${REPO}:${TAG}"
+        "${{ runner.temp }}"/rebar3_dependency_submission --token "${{ inputs.token }}"
       shell: bash
