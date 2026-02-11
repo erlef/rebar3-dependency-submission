@@ -72,13 +72,29 @@ jobs:
                 -hash-${{ hashFiles('rebar.lock') }}-${{ hashFiles('rebar.config') }}\
                 -${{ github.run_id }}-${{ github.run_attempt }}"
 
-      - name: Submit local snapshot (test)
+      - name: Test local dependency submission
         run: |
           ./_build/default/bin/rebar3_dependency_submission --token "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Test release
-        uses: ./.github/actions/release
+      - name: Attest provenance
+        id: attest-provenance
+        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+        uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
         with:
-          tag: ${{ github.sha }}
-          github_actor: ${{ github.actor }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          subject-path: _build/default/bin/rebar3_dependency_submission
+
+      - name: Copy provenance
+        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+        run: |
+            cp \
+              "${{ steps.attest-provenance.outputs.bundle-path }}" \
+              _build/default/bin/rebar3_dependency_submission.sigstore
+
+      - name: Create a GitHub release
+        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+        run: |
+          gh release create \
+            --generate-notes \
+            "${{ inputs.tag }}" \
+            _build/default/bin/rebar3_dependency_submission*
+        shell: bash
