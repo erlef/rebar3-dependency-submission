@@ -1,5 +1,5 @@
 {"1.2.0",
-[{<<"certifi">>,{pkg,<<"certifi">>,<<"2.15.0">>},0},
+[{<<"certifi">>,{pkg,<<"certifi">>,<<"2.16.0">>},0},
  {<<"getopt">>,{pkg,<<"getopt">>,<<"1.0.2">>},0},
  {<<"purl">>,
   {git,"git@github.com:erlef/purl.git",
@@ -7,9 +7,9 @@
   0}]}.
 [
 {pkg_hash,[
- {<<"certifi">>, <<"0E6E882FCDAAA0A5A9F2B3DB55B1394DBA07E8D6D9BCAD08318FB604C6839712">>},
+ {<<"certifi">>, <<"A4EDFC1D2DA3424D478A3271133BF28E0EC5E6FD8C009AAB5A4AE980CB165CE9">>},
  {<<"getopt">>, <<"33D9B44289FE7AD08627DDFE1D798E30B2DA0033B51DA1B3A2D64E72CD581D02">>}]},
 {pkg_hash_ext,[
- {<<"certifi">>, <<"B147ED22CE71D72EAFDAD94F055165C1C182F61A2FF49DF28BCC71D1D5B94A60">>},
+ {<<"certifi">>, <<"8A64F6669D85E9CC0E5086FCF29A5B13DE57A13EFA23D3582874B9A19303F184">>},
  {<<"getopt">>, <<"A0029AEA4322FB82A61F6876A6D9C66DC9878B6CB61FAA13DF3187384FD4EA26">>}]}
 ].
