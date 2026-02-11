@@ -3,6 +3,7 @@ name: Continuous Integration / Release
 
 on:
   pull_request:
+
   workflow_dispatch:
     inputs:
       tag:
@@ -97,4 +98,6 @@ jobs:
             --generate-notes
             "${{ inputs.tag }}"
             _build/default/bin/rebar3_dependency_submission*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
