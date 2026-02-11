@@ -29,7 +29,7 @@ runs:
 
     - name: Verify Dependency Submission Tool Provenance
       env:
-        TAG: v1.0.0-beta.3 # release-TAG
+        TAG: v1.0.0-beta.4 # release-TAG
         # TBD(erlef): update REPO
         REPO: kivra/rebar3-dependency-submission
         GITHUB_TOKEN: ${{ inputs.token }}
@@ -43,7 +43,7 @@ runs:
 
     - name: Run Dependency Submission
       env:
-        TAG: v1.0.0-beta.3 # release-TAG
+        TAG: v1.0.0-beta.4 # release-TAG
         # TBD(erlef): update REPO
         REPO: kivra/rebar3-dependency-submission
       run: |
