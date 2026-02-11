@@ -36,11 +36,11 @@ permissions:
   contents: write
 
 jobs:
-  rebar-dependency-submission:
+  rebar3-dependency-submission:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
-      - uses: kivra/rebar-dependency-submission@v1
+      - uses: kivra/rebar3-dependency-submission@v1
 ```
 
 ## Inputs

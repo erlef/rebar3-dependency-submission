@@ -1,4 +1,4 @@
--module(rebar3_dependency_submission_rebar).
+-module(rebar3_dependency_submission_rebar3).
 
 -define(API, [
     from/1,
