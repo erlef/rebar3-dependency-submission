@@ -73,10 +73,13 @@ runs:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       shell: bash
 
+    # I'm using this temporarily, to test my branches changes, and it can potentially
+    # be done, when required, for specific tags, but since uses: can't access templated
+    # elements we need to update the branch by hand
+    # TBD: before merge this should ALWAYS be commented out
     - name: Test it as a shared action
       if: github.event_name == 'pull_request'
-      uses: ${{ github.repository }}@${{ github.head_ref }}
+      uses: kivra/rebar3-dependency-submission@fix/initial-version-5
       with:
         token: ${{ inputs.github_token }}
         tag: ${{ inputs.tag }}
-      shell: bash
