@@ -1,0 +1,61 @@
+---
+name: Release
+
+on:
+  pull_request:
+
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+
+permissions:
+  # The API requires write permission on the repository to submit dependencies
+  contents: write
+  # The following are for attestation purposes
+  id-token: write
+  attestations: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install Erlang
+        uses: erlef/setup-beam@e6d7c94229049569db56a7ad5a540c051a010af9 # v1.20.4
+        id: setup-beam
+        with:
+          # Try to keep consistent with action.yaml and ci.yaml
+          otp-version: 28.3.1
+          rebar3-version: 3.26.0
+
+      - name: Create Rebar3/Erlang script
+        run: |
+          git config \
+            --global url."https://github.com/".insteadOf 'git@github.com:'
+          rebar3 escriptize
+
+      - name: Attest provenance
+        id: attest-provenance
+        uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+        with:
+          subject-path: _build/default/bin/rebar3_dependency_submission
+
+      - name: Copy provenance
+        run: |
+          cp \
+            "${{ steps.attest-provenance.outputs.bundle-path }}" \
+            _build/default/bin/rebar3_dependency_submission.sigstore
+
+      - name: Create a GitHub release
+        run: |
+          gh release create \
+            --generate-notes \
+            --verify-tag \
+            "${{ github.ref_name }}" \
+            _build/default/bin/rebar3_dependency_submission*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

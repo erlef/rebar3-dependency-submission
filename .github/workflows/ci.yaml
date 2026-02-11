@@ -1,26 +1,15 @@
 ---
-name: Continuous Integration / Release
+name: Continuous Integration
 
 on:
   pull_request:
 
-  workflow_dispatch:
-    inputs:
-      tag:
-        required: true
-        type: string
-
-# The API requires write permission on the repository to submit dependencies
 permissions:
-  contents: write
-  actions: write
-  packages: write
-  id-token: write
-  attestations: write
+  contents: read
 
 jobs:
   continuous_integration:
-    name: Continuous Integration / Release
+    name: Continuous Integration
     runs-on: ubuntu-24.04
 
     steps:
@@ -31,7 +20,7 @@ jobs:
         uses: erlef/setup-beam@e6d7c94229049569db56a7ad5a540c051a010af9 # v1.20.4
         id: setup-beam
         with:
-          # Try to keep consistent with action.yaml
+          # Try to keep consistent with action.yaml and release.yaml
           otp-version: 28.3.1
           rebar3-version: 3.26.0
 
@@ -77,28 +66,3 @@ jobs:
         run: |
           ./_build/default/bin/rebar3_dependency_submission \
             --token "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Attest provenance
-        id: attest-provenance
-        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
-        uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
-        with:
-          subject-path: _build/default/bin/rebar3_dependency_submission
-
-      - name: Copy provenance
-        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
-        run: |
-          cp \
-            "${{ steps.attest-provenance.outputs.bundle-path }}" \
-            _build/default/bin/rebar3_dependency_submission.sigstore
-
-      - name: Create a GitHub release
-        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
-        run: |
-          gh release create \
-            --generate-notes \
-            "${{ inputs.tag }}" \
-            _build/default/bin/rebar3_dependency_submission*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: bash
