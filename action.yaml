@@ -64,6 +64,7 @@ runs:
         else
           echo "exists=false" >>"${GITHUB_OUTPUT}"
         fi
+      shell: bash
 
     - name: Install Erlang
       if: steps.check-beam.outputs.exists == 'false'
