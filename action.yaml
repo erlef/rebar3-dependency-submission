@@ -56,7 +56,17 @@ runs:
       shell: bash
       working-directory: ${{ runner.temp }}
 
+    - name: Check if Erlang and Rebar3 are installed
+      id: check-beam
+      run: |
+        if command -v erl >/dev/null 2>&1 && command -v rebar3 >/dev/null 2>&1; then
+          echo "exists=true" >>"${GITHUB_OUTPUT}"
+        else
+          echo "exists=false" >>"${GITHUB_OUTPUT}"
+        fi
+
     - name: Install Erlang
+      if: steps.check-beam.outputs.exists == 'false'
       uses: erlef/setup-beam@e6d7c94229049569db56a7ad5a540c051a010af9 # v1.20.4
       with:
         # Try to keep consistent with ci.yaml and release.yaml
