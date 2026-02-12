@@ -91,7 +91,7 @@ app(#{applications := Apps} = State0, App) ->
         AppSrcPattern = lists:concat([
             "_build/default/lib/", App, "/**/", AppSrcFile, "{,.script}"
         ]),
-        [PathAppSrc0 | _] ?= filelib:wildcard(AppSrcPattern),
+        {app_src, [PathAppSrc0 | _]} ?= {app_src, filelib:wildcard(AppSrcPattern)},
         non_existing ?= app_src(State0, PathAppSrc0),
         ?error(enoent, [App, State0], #{
             reason => {file, format_error, [enoent]}
@@ -101,7 +101,10 @@ app(#{applications := Apps} = State0, App) ->
             app_src(State0, PathAppSrc1);
         [{application, _, AppManifest}] ->
             State0#{applications := Apps#{App => maps:from_list(AppManifest)}};
-        PathApp when ?is_string(PathApp) ->
+        {app_src, PathApp} when PathApp =:= [] ->
+            % .app.src{,.script} not available, so best-effort wins
+            State0#{applications := #{}};
+        {app_src, PathApp} when ?is_string(PathApp) ->
             [{application, _, AppManifest}] = consult(PathApp),
             State0#{applications := Apps#{App => maps:from_list(AppManifest)}};
         {app, AppManifest} when is_map(AppManifest) ->
