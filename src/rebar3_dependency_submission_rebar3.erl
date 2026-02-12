@@ -179,18 +179,23 @@ config_if_exists_internal(PathRebarConfig) ->
 -spec lock(t(), file:name_all()) -> t().
 lock(State, PathRebarLock) ->
     [{LockVersion, Packages}, PackageHashes] = consult(PathRebarLock),
-    PkgHash = proplists:get_value(pkg_hash, PackageHashes, []),
-    PkgHashExt = proplists:get_value(pkg_hash_ext, PackageHashes, []),
-    State#{
-        lock_version := LockVersion,
-        packages :=
-            #{
-                binary_to_atom(LocalName) => {Version, DepLevel}
-             || {LocalName, Version, DepLevel} <- Packages
-            },
-        pkg_hash := maps:from_list(PkgHash),
-        pkg_hash_ext := maps:from_list(PkgHashExt)
-    }.
+    case LockVersion of
+        undefined ->
+            State;
+        _ ->
+            PkgHash = proplists:get_value(pkg_hash, PackageHashes, []),
+            PkgHashExt = proplists:get_value(pkg_hash_ext, PackageHashes, []),
+            State#{
+                lock_version := LockVersion,
+                packages :=
+                    #{
+                        binary_to_atom(LocalName) => {Version, DepLevel}
+                     || {LocalName, Version, DepLevel} <- Packages
+                    },
+                pkg_hash := maps:from_list(PkgHash),
+                pkg_hash_ext := maps:from_list(PkgHashExt)
+            }
+    end.
 
 -doc """
 A variant of `file:consult/1` that raises errors instead of returning them.
@@ -213,6 +218,9 @@ Similar to `consult/1` except it returns `non_existing` instead of raising an er
 -spec consult_if_exists(file:name_all()) -> [dynamic()] | non_existing.
 consult_if_exists(File) ->
     case file:consult(File) of
+        {ok, [[]]} ->
+            % rebar.lock might be [].
+            [{undefined, []}, []];
         {ok, Terms} ->
             Terms;
         {error, enoent} ->
