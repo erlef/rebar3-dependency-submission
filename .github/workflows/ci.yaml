@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 jobs:
-  continuous_integration:
+  continuous-integration:
     name: Continuous Integration
     runs-on: ubuntu-24.04
 
