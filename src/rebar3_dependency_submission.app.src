@@ -1,3 +1,5 @@
+%% SPDX-License-Identifier: Apache-2.0
+%% SPDX-FileCopyrightText: 2026 Kivra AB
 {application, rebar3_dependency_submission, [
     {description,
         "Calculates dependencies for Rebar3 and submits the list to the GitHub Dependency Submission API"},

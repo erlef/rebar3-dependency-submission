@@ -1,3 +1,6 @@
+%% SPDX-License-Identifier: Apache-2.0
+%% SPDX-FileCopyrightText: 2026 Kivra AB
+
 %% Returns the current stacktrace with the given arguments in the current frame.
 -define(stacktrace(Arguments), [
     {?MODULE, ?FUNCTION_NAME, Arguments}

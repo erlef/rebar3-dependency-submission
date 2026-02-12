@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- SPDX-FileCopyrightText: 2026 Kivra AB -->
 # GitHub Dependency Submission Action for Rebar3
 
 This GitHub Action extracts dependencies from an Rebar3 project and submits them to
