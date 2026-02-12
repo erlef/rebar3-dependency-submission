@@ -91,7 +91,8 @@ app(#{applications := Apps} = State0, App) ->
         AppSrcPattern = lists:concat([
             "_build/default/lib/", App, "/**/", AppSrcFile, "{,.script}"
         ]),
-        {app_src, [PathAppSrc0 | _]} ?= {app_src, filelib:wildcard(AppSrcPattern)},
+        {app_src, [PathAppSrc0 | _]} ?=
+            {app_src, filelib:wildcard(AppSrcPattern)},
         non_existing ?= app_src(State0, PathAppSrc0),
         ?error(enoent, [App, State0], #{
             reason => {file, format_error, [enoent]}
