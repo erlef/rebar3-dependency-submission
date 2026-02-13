@@ -67,7 +67,7 @@ This action was tested for the following operating systems and architectures, us
 |------------------|--------------|--------|--------------------|
 | Linux            | x64          | ✅     | `ubuntu-24.04`     |
 | Linux            | ARM64        | ✅     | `ubuntu-24.04-arm` |
-| macOS            | x64          | ❌     | `macos-14`         |
+| macOS            | x64          | ❌     | `macos-13`         |
 | macOS            | ARM64        | ✅     | `macos-15`         |
 | Windows          | x64          | ✅     | `windows-2022`     |
 | Windows          | ARM64        | ❌     | `windows-2025`     |
