@@ -27,6 +27,9 @@ By submitting your dependencies to GitHub:
 
 This action is intended to be used within a GitHub Actions workflow.
 
+**Note**: A `rebar.lock` file must exist in the search path. If your workflow excludes this file,
+this action cannot resolve the necessary app names and versions, and will fail.
+
 ### Minimal Example
 
 ```yaml
