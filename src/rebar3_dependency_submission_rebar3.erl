@@ -104,7 +104,7 @@ app(#{applications := Apps} = State0, App) ->
             State0#{applications := Apps#{App => maps:from_list(AppManifest)}};
         {app_src, PathApp} when PathApp =:= [] ->
             % .app.src{,.script} not available, so best-effort wins
-            State0#{applications := #{}};
+            State0;
         {app_src, PathApp} when ?is_string(PathApp) ->
             [{application, _, AppManifest}] = consult(PathApp),
             State0#{applications := Apps#{App => maps:from_list(AppManifest)}};
