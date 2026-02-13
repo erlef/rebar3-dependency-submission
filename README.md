@@ -43,7 +43,7 @@ permissions:
   contents: write
 
 jobs:
-  # Run as an isolated job because of Erlang/Rebar3 installation
+  # Run in its own job so the Erlang/Rebar3 installation doesn't affect other jobs
   rebar3-dependency-submission:
     runs-on: ubuntu-24.04
     steps:
