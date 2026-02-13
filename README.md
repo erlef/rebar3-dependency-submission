@@ -61,10 +61,14 @@ jobs:
 This action was tested for the following operating systems and architectures, using the corresponding
 [GitHub-hosted runners](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources):
 
-| Operating System | Architecture | Tested Runner      |
-|------------------|--------------|--------------------|
-| Linux            | x64          | `ubuntu-24.04`     |
-| Linux            | ARM64        | `ubuntu-24.04-arm` |
+| Operating System | Architecture | Works? | Tested Runner      |
+|------------------|--------------|--------|--------------------|
+| Linux            | x64          | ✅     | `ubuntu-24.04`     |
+| Linux            | ARM64        | ✅     | `ubuntu-24.04-arm` |
+| macOS            | x64          | ❌     | `macos-14`         |
+| macOS            | ARM64        | ✅     | `macos-15`         |
+| Windows          | x64          | ✅     | `windows-2022`     |
+| Windows          | ARM64        | ❌     | `windows-2025`     |
 
 If you find it working for another operating system / architecture, feel free to open a pull request
 to update the table above.
