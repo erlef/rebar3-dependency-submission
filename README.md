@@ -27,8 +27,10 @@ By submitting your dependencies to GitHub:
 
 This action is intended to be used within a GitHub Actions workflow.
 
-**Note**: A `rebar.lock` file must exist in the search path. If your workflow excludes this file,
-this action cannot resolve the necessary app names and versions, and will fail.
+**Note**: `rebar.lock` is discovered via `git ls-files`, so it must be both tracked by Git and
+checked out in the workspace. If it is excluded from the checkout (for example, via sparse checkout
+or path filters), this action cannot resolve the necessary app names and versions and will fail when
+attempting to read the lockfile.
 
 ### Minimal Example
 
