@@ -179,7 +179,14 @@ config_if_exists_internal(PathRebarConfig) ->
 
 -spec lock(t(), file:name_all()) -> t().
 lock(State, PathRebarLock) ->
-    [{LockVersion, Packages}, PackageHashes] = consult(PathRebarLock),
+    [{LockVersion, Packages}, PackageHashes] =
+        case consult(PathRebarLock) of
+            [[]] ->
+                % rebar.lock might be [].
+                [{undefined, []}, []];
+            _ = Other ->
+                Other
+        end,
     case LockVersion of
         undefined ->
             State;
@@ -219,9 +226,6 @@ Similar to `consult/1` except it returns `non_existing` instead of raising an er
 -spec consult_if_exists(file:name_all()) -> [dynamic()] | non_existing.
 consult_if_exists(File) ->
     case file:consult(File) of
-        {ok, [[]]} ->
-            % rebar.lock might be [].
-            [{undefined, []}, []];
         {ok, Terms} ->
             Terms;
         {error, enoent} ->
