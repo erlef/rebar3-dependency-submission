@@ -240,7 +240,8 @@ app_src(Directory) ->
             {value, Path} -> Path;
             [Path] when ?is_string(Path) -> Path
         end,
-    case code:where_is_file(filename:basename(PathAppSrc, ".src")) of
+    File = unicode:characters_to_list(filename:basename(PathAppSrc, ".src")),
+    case code:where_is_file(File) of
         non_existing ->
             #{applications := Applications} = rebar3_dependency_submission_rebar3:app_src(
                 rebar3_dependency_submission_rebar3:new(), PathAppSrc
