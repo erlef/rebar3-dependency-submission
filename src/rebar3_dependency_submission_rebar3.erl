@@ -305,5 +305,9 @@ build_path(App, File) ->
 build_path(App, Directory, File) ->
     filename:join(["_build", "default", "lib", App, Directory, File]).
 
-extension(File, Extension) ->
+extension(File0, Extension) when is_atom(File0) ->
+    File = atom_to_list(File0),
+    extension(File, Extension);
+extension(File0, Extension) ->
+    File = unicode:characters_to_list(File0),
     lists:concat([File, Extension]).
