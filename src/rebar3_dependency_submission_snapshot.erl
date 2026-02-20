@@ -74,7 +74,7 @@ new(#{
         sha => Sha,
         ref => Ref,
         detector => #{
-            name => ~"rebar3",
+            name => ~"rebar3-dependency-submission",
             version => rebar3_dependency_submission_common:to_binary(PluginVsn),
             % TBD(erlef): update url
             url => ~"https://github.com/kivra/rebar3-dependency-submission"
