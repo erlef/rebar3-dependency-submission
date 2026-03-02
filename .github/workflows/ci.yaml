@@ -6,10 +6,6 @@ name: Continuous Integration
 on:
   pull_request:
 
-permissions:
-  # The API requires write permission on the repository to submit dependencies
-  contents: write
-
 jobs:
   reuse-compliance-check:
     name: REUSE Compliance Check
@@ -27,6 +23,9 @@ jobs:
   continuous-integration:
     name: Continuous Integration
     runs-on: ubuntu-24.04
+    permissions:
+      # The API requires write permission on the repository to submit dependencies
+      contents: write
 
     steps:
       - name: Checkout code
