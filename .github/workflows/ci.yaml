@@ -14,6 +14,8 @@ jobs:
   reuse-compliance-check:
     name: REUSE Compliance Check
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout code
