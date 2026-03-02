@@ -48,8 +48,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6.0.2
-      # TBD(erlef): update uses
-      - uses: kivra/rebar3-dependency-submission@v1.0.0
+      - uses: erlef/rebar3-dependency-submission@v1.0.0
 ```
 
 ## Inputs

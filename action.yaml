@@ -5,8 +5,7 @@ name: Rebar3 Dependency Submission
 # yamllint disable-line rule:line-length
 description: Calculates dependencies for Rebar3 and submits the list to the GitHub Dependency Submission API
 
-# TBD(erlef): author
-author: Kivra
+author: Erlang Ecosystem Foundation
 
 branding:
   icon: arrow-up
@@ -25,8 +24,7 @@ runs:
     - name: Download Dependency Submission Tool
       env:
         TAG: v1.0.0-beta.16 # release-TAG
-        # TBD(erlef): update REPO
-        REPO: kivra/rebar3-dependency-submission
+        REPO: erlef/rebar3-dependency-submission
         GITHUB_TOKEN: ${{ inputs.token }}
       run: |
         gh release download \
@@ -40,8 +38,7 @@ runs:
     - name: Verify Dependency Submission Tool Provenance
       env:
         TAG: v1.0.0-beta.16 # release-TAG
-        # TBD(erlef): update REPO
-        REPO: kivra/rebar3-dependency-submission
+        REPO: erlef/rebar3-dependency-submission
         GITHUB_TOKEN: ${{ inputs.token }}
       run: |
         gh attestation verify \
