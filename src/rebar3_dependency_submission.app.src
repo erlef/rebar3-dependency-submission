@@ -4,7 +4,7 @@
     {description,
         "Calculates dependencies for Rebar3 and submits the list to the GitHub Dependency Submission API"},
     % release-TAG
-    {vsn, "v1.0.0-beta.17"},
+    {vsn, "v0.1.0"},
     {applications, [
         kernel,
         stdlib,

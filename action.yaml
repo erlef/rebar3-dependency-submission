@@ -23,7 +23,7 @@ runs:
   steps:
     - name: Download Dependency Submission Tool
       env:
-        TAG: v1.0.0-beta.17 # release-TAG
+        TAG: v0.1.0 # release-TAG
         REPO: erlef/rebar3-dependency-submission
         GITHUB_TOKEN: ${{ inputs.token }}
       run: |
@@ -37,7 +37,7 @@ runs:
 
     - name: Verify Dependency Submission Tool Provenance
       env:
-        TAG: v1.0.0-beta.17 # release-TAG
+        TAG: v0.1.0 # release-TAG
         REPO: erlef/rebar3-dependency-submission
         GITHUB_TOKEN: ${{ inputs.token }}
       run: |
