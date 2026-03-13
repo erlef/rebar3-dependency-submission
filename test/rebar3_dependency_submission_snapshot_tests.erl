@@ -38,13 +38,33 @@ to_purl_git_subdir_test() ->
     ?assertEqual(~"github", Purl#purl.type),
     ?assertEqual([~"apps", ~"rebar"], Purl#purl.subpath).
 
-to_purl_unsupported_ref_type_test() ->
-    ?assertError(
-        function_clause,
-        rebar3_dependency_submission_snapshot:to_purl(
-            #git{repo = "git@github.com:erlef/purl.git", ref = {tag, "v1.0.0"}}
-        )
-    ).
+to_purl_git_tag_test() ->
+    Purl = rebar3_dependency_submission_snapshot:to_purl(
+        #git{repo = "git@github.com:erlef/purl.git", ref = {tag, "v1.0.0"}}
+    ),
+    ?assertEqual(~"github", Purl#purl.type),
+    ?assertEqual(~"purl", Purl#purl.name),
+    ?assertEqual(~"v1.0.0", Purl#purl.version).
+
+to_purl_git_branch_test() ->
+    Purl = rebar3_dependency_submission_snapshot:to_purl(
+        #git{repo = "git@github.com:erlef/purl.git", ref = {branch, "main"}}
+    ),
+    ?assertEqual(~"github", Purl#purl.type),
+    ?assertEqual(~"purl", Purl#purl.name),
+    ?assertEqual(~"main", Purl#purl.version).
+
+to_purl_git_subdir_tag_test() ->
+    Purl = rebar3_dependency_submission_snapshot:to_purl(
+        #git_subdir{
+            repo = "git@github.com:erlang/rebar3.git",
+            ref = {tag, "3.24.0"},
+            subdir = "apps/rebar"
+        }
+    ),
+    ?assertEqual(~"github", Purl#purl.type),
+    ?assertEqual([~"apps", ~"rebar"], Purl#purl.subpath),
+    ?assertEqual(~"3.24.0", Purl#purl.version).
 
 %%--------------------------------------------------------------------
 %% resolve_dependency

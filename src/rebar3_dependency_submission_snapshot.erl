@@ -212,12 +212,12 @@ to_purl_internal(#pkg{name = Name, version = Version}) ->
     purl:from_resource_uri(
         <<"https://hex.pm/packages/", Name/binary, "/", Version/binary>>
     );
-to_purl_internal(#git{repo = Repo, ref = {ref, Ref}}) ->
+to_purl_internal(#git{repo = Repo, ref = Ref}) ->
     purl:from_resource_uri(
         rebar3_dependency_submission_common:to_binary(Repo),
-        rebar3_dependency_submission_common:to_binary(Ref)
+        rebar3_dependency_submission_common:to_binary(ref_value(Ref))
     );
-to_purl_internal(#git_subdir{repo = Repo, ref = {ref, Ref}, subdir = SubPath0}) ->
+to_purl_internal(#git_subdir{repo = Repo, ref = Ref, subdir = SubPath0}) ->
     maybe
         SubPath1 = binary:split(
             rebar3_dependency_submission_common:to_binary(SubPath0), ~"/", [
@@ -227,10 +227,14 @@ to_purl_internal(#git_subdir{repo = Repo, ref = {ref, Ref}, subdir = SubPath0}) 
         {ok, Purl} ?=
             purl:from_resource_uri(
                 rebar3_dependency_submission_common:to_binary(Repo),
-                rebar3_dependency_submission_common:to_binary(Ref)
+                rebar3_dependency_submission_common:to_binary(ref_value(Ref))
             ),
         {ok, Purl#purl{subpath = SubPath1}}
     end.
+
+ref_value({ref, V}) -> V;
+ref_value({tag, V}) -> V;
+ref_value({branch, V}) -> V.
 
 app_src(Directory) ->
     PathAppSrc =
