@@ -8,6 +8,10 @@
 -export(?API).
 -ignore_xref(?API).
 
+-ifdef(TEST).
+-export([to_purl/1, resolve_dependency/3]).
+-endif.
+
 -export_type([
     t/0
 ]).
@@ -191,7 +195,12 @@ resolve_dependency(LocalName, {Version, DepLevel}, #{
                         ResolvedDependency0
                 end
         end,
-    {Purl#purl.name, ResolvedDependency1}.
+    Name =
+        case Version of
+            #git_subdir{} -> PackageName;
+            _ -> Purl#purl.name
+        end,
+    {Name, ResolvedDependency1}.
 
 to_purl(Version) ->
     case to_purl_internal(Version) of

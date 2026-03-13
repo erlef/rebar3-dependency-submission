@@ -1,0 +1,68 @@
+%% SPDX-License-Identifier: Apache-2.0
+%% SPDX-FileCopyrightText: 2026 Kivra AB
+-module(rebar3_dependency_submission_snapshot_tests).
+
+-include_lib("eunit/include/eunit.hrl").
+-include_lib("purl/include/purl.hrl").
+-include("rebar3_dependency_submission_records.hrl").
+
+%%--------------------------------------------------------------------
+%% resolve_dependency: git_subdir uses local name, not repo name
+%%--------------------------------------------------------------------
+
+resolve_dependency_git_subdir_uses_local_name_test() ->
+    Ref = "049f80c4fb5990b682b23b1fde643103ec1e6dea",
+    State = #{
+        runtime_dependencies => ordsets:from_list([auth]),
+        hex_metadata => #{},
+        pkg_hash => #{},
+        pkg_hash_ext => #{}
+    },
+    {Name, Resolved} = rebar3_dependency_submission_snapshot:resolve_dependency(
+        auth,
+        {
+            #git_subdir{
+                repo = "git@github.com:org/monorepo.git",
+                ref = {ref, Ref},
+                subdir = "erlang/auth"
+            },
+            0
+        },
+        State
+    ),
+    %% The key should be the local name "auth", not the repo name "monorepo"
+    ?assertEqual(~"auth", Name),
+    ?assertEqual(direct, maps:get(relationship, Resolved)),
+    ?assertEqual(runtime, maps:get(scope, Resolved)),
+    %% package_url should contain the subpath
+    PackageUrl = maps:get(package_url, Resolved),
+    ?assertNotEqual(nomatch, string:find(PackageUrl, "erlang/auth")).
+
+resolve_dependency_hex_uses_purl_name_test() ->
+    State = #{
+        runtime_dependencies => ordsets:from_list([cowboy]),
+        hex_metadata => #{},
+        pkg_hash => #{},
+        pkg_hash_ext => #{}
+    },
+    {Name, _Resolved} = rebar3_dependency_submission_snapshot:resolve_dependency(
+        cowboy, {#pkg{name = ~"cowboy", version = ~"2.12.0"}, 0}, State
+    ),
+    %% For hex packages, key should still be the purl name
+    ?assertEqual(~"cowboy", Name).
+
+resolve_dependency_git_uses_purl_name_test() ->
+    Ref = "d64773d59dfd1d6b8920209f219e3c796c974a3a",
+    State = #{
+        runtime_dependencies => ordsets:from_list([purl]),
+        hex_metadata => #{},
+        pkg_hash => #{},
+        pkg_hash_ext => #{}
+    },
+    {Name, _Resolved} = rebar3_dependency_submission_snapshot:resolve_dependency(
+        purl,
+        {#git{repo = "git@github.com:erlef/purl.git", ref = {ref, Ref}}, 0},
+        State
+    ),
+    %% For git packages, key should be the purl name (repo name)
+    ?assertEqual(~"purl", Name).
