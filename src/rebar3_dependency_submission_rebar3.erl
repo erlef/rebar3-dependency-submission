@@ -12,6 +12,10 @@
 -export(?API).
 -ignore_xref(?API).
 
+-ifdef(TEST).
+-export([version/1, consult/1]).
+-endif.
+
 -export_type([
     t/0
 ]).
