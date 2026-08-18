@@ -36,8 +36,8 @@ jobs:
         id: setup-beam
         with:
           # Try to keep consistent with action.yaml and release.yaml
-          otp-version: 28.3.1
-          rebar3-version: 3.26.0
+          otp-version: 29.0.5
+          rebar3-version: 3.27.0
 
       - name: Restore Erlang cache
         uses: actions/cache/restore@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v5.0.2

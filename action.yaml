@@ -57,8 +57,8 @@ runs:
       uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
       with:
         # Try to keep consistent with ci.yaml and release.yaml
-        otp-version: 28.3.1
-        rebar3-version: 3.26.0
+        otp-version: 29.0.5
+        rebar3-version: 3.27.0
 
     - name: Run Dependency Submission
       run: |
